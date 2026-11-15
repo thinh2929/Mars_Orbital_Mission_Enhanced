@@ -26,14 +26,14 @@ export const RightSidebar: React.FC = () => {
   ];
 
   const objLabels = [
-    'Hoàn thành kiểm tra trước phóng',
-    'Đạt mốc 101 km an toàn',
-    'Tách tầng và vỏ fairing',
-    'Thiết lập quỹ đạo chờ Trái Đất',
-    'Tiêm quỹ đạo chuyển tiếp & tách MRO',
-    'Hiệu chỉnh hành trình đến Sao Hỏa',
-    'Đạt quỹ đạo Sao Hỏa mục tiêu',
-    `Gửi về ít nhất ${targetPhotos} ảnh`,
+    'Complete preflight verification',
+    'Attain 101 km altitude safely (MECO)',
+    'Separate booster stage & fairing',
+    'Establish Earth parking orbit',
+    'Execute TMI & detach MRO',
+    'Midcourse trajectory correction',
+    'Achieve target Mars science orbit',
+    `Downlink at least ${targetPhotos} images`,
   ];
 
   const fmt = (n: number) => Number(n).toLocaleString('en-US', { maximumFractionDigits: 1 });
@@ -44,41 +44,41 @@ export const RightSidebar: React.FC = () => {
       return (
         <>
           <div className="telemetry-item">
-            <label>TỔNG KHỐI LƯỢNG</label>
+            <label>TOTAL WET MASS</label>
             <strong>{fmt(b.mass)}</strong>
             <small>kg</small>
           </div>
           <div className="telemetry-item">
-            <label>SỨC TẢI TỐI ĐA</label>
+            <label>MAX VEHICLE CAPACITY</label>
             <strong>{fmt(b.launcher.max)}</strong>
             <small>kg</small>
           </div>
           <div className="telemetry-item">
-            <label>KHỐI LƯỢNG KHÔ</label>
+            <label>SPACECRAFT DRY MASS</label>
             <strong>{fmt(b.dry)}</strong>
             <small>kg</small>
           </div>
           <div className="telemetry-item">
-            <label>CHẤT ĐẨY MRO</label>
+            <label>MRO PROPELLANT</label>
             <strong>{fmt(b.prop)}</strong>
             <small>kg</small>
           </div>
           <div className="telemetry-item">
-            <label>ĐIỆN TẠO RA</label>
+            <label>POWER GENERATION</label>
             <strong>{fmt(b.gen)}</strong>
             <small>W</small>
           </div>
           <div className="telemetry-item">
-            <label>ĐIỆN TIÊU THỤ</label>
+            <label>POWER CONSUMPTION</label>
             <strong>{fmt(b.draw)}</strong>
             <small>W</small>
           </div>
           <div className="telemetry-item">
-            <label>CHI PHÍ DỰ KIẾN</label>
+            <label>ESTIMATED BUDGET</label>
             <strong>${money(b.cost)}</strong>
           </div>
           <div className="telemetry-item">
-            <label>GIỚI HẠN MISSION</label>
+            <label>MISSION BUDGET CAP</label>
             <strong>${money(state.budget)}</strong>
           </div>
         </>
@@ -90,12 +90,12 @@ export const RightSidebar: React.FC = () => {
       return (
         <>
           <div className="telemetry-item">
-            <label>ĐỘ CAO</label>
+            <label>ALTITUDE</label>
             <strong>{l.alt.toFixed(1)}</strong>
             <small>km</small>
           </div>
           <div className="telemetry-item">
-            <label>VẬN TỐC</label>
+            <label>VELOCITY</label>
             <strong>{l.vel.toFixed(2)}</strong>
             <small>km/s</small>
           </div>
@@ -110,17 +110,17 @@ export const RightSidebar: React.FC = () => {
             <small>kPa</small>
           </div>
           <div className="telemetry-item">
-            <label>PITCH</label>
+            <label>PITCH ANGLE</label>
             <strong>{pitch}</strong>
             <small>°</small>
           </div>
           <div className="telemetry-item">
-            <label>ĐỘ LỆCH</label>
+            <label>DEVIATION</label>
             <strong>{l.deviation.toFixed(1)}</strong>
             <small>units</small>
           </div>
           <div className="telemetry-item">
-            <label>KẾT CẤU</label>
+            <label>STRUCTURAL HEALTH</label>
             <strong>{l.health.toFixed(0)}</strong>
             <small>%</small>
           </div>
@@ -137,36 +137,36 @@ export const RightSidebar: React.FC = () => {
       return (
         <>
           <div className="telemetry-item">
-            <label>ẢNH ĐÃ CHỤP</label>
+            <label>IMAGES STORED</label>
             <strong>{s.images.length}</strong>
-            <small>images</small>
+            <small>frames</small>
           </div>
           <div className="telemetry-item">
-            <label>ẢNH ĐÃ GỬI</label>
+            <label>DOWNLINKED</label>
             <strong>
               {s.returned.length}/{targetPhotos}
             </strong>
-            <small>images</small>
+            <small>frames</small>
           </div>
           <div className="telemetry-item">
-            <label>BỘ NHỚ SSR</label>
+            <label>SSR BUFFER</label>
             <strong>
               {usedMemory().toFixed(1)}/{b.opts[4].memory}
             </strong>
             <small>GB</small>
           </div>
           <div className="telemetry-item">
-            <label>DUNG LƯỢNG PIN</label>
+            <label>BATTERY STORAGE</label>
             <strong>{fmt(b.opts[2].capacity || 0)}</strong>
             <small>Ah</small>
           </div>
           <div className="telemetry-item">
-            <label>NHIÊN LIỆU MRO</label>
+            <label>MRO PROPELLANT</label>
             <strong>{Math.max(0, s.prop).toFixed(1)}</strong>
             <small>kg</small>
           </div>
           <div className="telemetry-item">
-            <label>QUỸ ĐẠO</label>
+            <label>SCIENCE ORBIT</label>
             <strong>{c.finalAlt.toFixed(1)}</strong>
             <small>km</small>
           </div>
@@ -177,22 +177,22 @@ export const RightSidebar: React.FC = () => {
     return (
       <>
         <div className="telemetry-item">
-          <label>ĐỘ CAO PHÓNG</label>
+          <label>CURRENT ALTITUDE</label>
           <strong>{l.alt.toFixed(0)}</strong>
           <small>km</small>
         </div>
         <div className="telemetry-item">
-          <label>NHIÊN LIỆU MRO</label>
+          <label>MRO PROPELLANT</label>
           <strong>{Math.max(0, s.prop).toFixed(0)}</strong>
           <small>kg</small>
         </div>
         <div className="telemetry-item">
-          <label>CHẤT ĐẨY CENTAUR</label>
+          <label>CENTAUR PROPELLANT</label>
           <strong>{fmt(state.tmi.fuel)}</strong>
           <small>kg</small>
         </div>
         <div className="telemetry-item">
-          <label>ĐỘ LỆCH QUỸ ĐẠO</label>
+          <label>ORBIT DEVIATION</label>
           <strong>{l.deviation.toFixed(1)}</strong>
           <small>units</small>
         </div>
@@ -207,7 +207,7 @@ export const RightSidebar: React.FC = () => {
           <small>km</small>
         </div>
         <div className="telemetry-item">
-          <label>ĐIỆN HỆ THỐNG</label>
+          <label>POWER SYSTEM</label>
           <strong>{fmt(b.gen)}</strong>
           <small>W</small>
         </div>
@@ -224,14 +224,14 @@ export const RightSidebar: React.FC = () => {
     <aside className="sidebar right-panel">
       <div className="sidebar-inner">
         <div className="eyebrow">REAL-TIME TELEMETRY</div>
-        <h2 className="sidebar-head">Thông số hệ thống</h2>
+        <h2 className="sidebar-head">System Telemetry</h2>
         <div className="section-rule"></div>
 
         <div id="telemetry" className="telemetry">
           {renderTelemetryGrid()}
 
           <div className="telemetry-item" style={{ gridColumn: '1 / -1' }}>
-            <label>SATELLITE FUEL RESERVE</label>
+            <label>SATELLITE HYDRAZINE RESERVE</label>
             <div className="meter">
               <i
                 style={{
@@ -268,37 +268,37 @@ export const RightSidebar: React.FC = () => {
         <div className="mission-label">FLIGHT SAFETY</div>
         <div id="safetyPanel" className="safety-panel">
           <div className="safety-row">
-            <span>Khối lượng</span>
+            <span>Payload Mass</span>
             <b className={b.weightOK ? '' : 'danger'}>
               {b.weightOK ? 'WITHIN LIMIT' : 'OVERWEIGHT'}
             </b>
           </div>
           <div className="safety-row">
-            <span>Khoang tải</span>
+            <span>Fairing Envelope</span>
             <b className={b.fairingOK ? '' : 'danger'}>
               {b.fairingOK ? 'COMPATIBLE' : 'TOO NARROW'}
             </b>
           </div>
           <div className="safety-row">
-            <span>Max Q</span>
+            <span>Dynamic Pressure</span>
             <b className={l.maxQ < 45 ? '' : 'danger'}>
               {l.maxQ < 45 ? 'NOMINAL' : 'EXCEEDED'}
             </b>
           </div>
           <div className="safety-row">
-            <span>Tình trạng kết cấu</span>
+            <span>Structural Health</span>
             <b className={l.health > 60 ? '' : 'danger'}>
               {l.health > 60 ? 'NOMINAL' : 'CRITICAL'}
             </b>
           </div>
           <div className="safety-row">
-            <span>Nguồn &amp; cảm biến</span>
+            <span>Electrical Power</span>
             <b className={b.powerOK ? '' : 'warn'}>
               {b.powerOK ? 'POWER OK' : 'POWER MANAGEMENT'}
             </b>
           </div>
           {s.powered === false && (
-            <div className="alert-card bad">POWER BUS OFFLINE • NHIỆM VỤ KHÔNG THỂ TIẾP TỤC</div>
+            <div className="alert-card bad">POWER BUS OFFLINE • MISSION CANNOT PROCEED</div>
           )}
         </div>
         <div className="section-rule"></div>
@@ -314,7 +314,7 @@ export const RightSidebar: React.FC = () => {
         </div>
 
         <div className="right-footnote">
-          Mô phỏng giáo dục 2D. Các công thức và ngưỡng gameplay được đơn giản hóa; không dùng cho thiết kế chuyến bay thực.
+          Educational 2D simulation. Equations and gameplay thresholds are simplified; not intended for real-world flight design.
         </div>
       </div>
     </aside>

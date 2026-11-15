@@ -3,7 +3,7 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: 'MARS ORBITAL MISSION — Mission Control',
-  description: 'Trò chơi mô phỏng giáo dục nhiệm vụ đưa vệ tinh tới quỹ đạo Sao Hỏa (Next.js Edition)',
+  description: 'Interactive educational simulation of the Mars Reconnaissance Orbiter mission to Mars orbit (Next.js Edition)',
 };
 
 export const viewport: Viewport = {
@@ -18,7 +18,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="vi">
+    <html lang="en">
       <body>{children}</body>
     </html>
   );

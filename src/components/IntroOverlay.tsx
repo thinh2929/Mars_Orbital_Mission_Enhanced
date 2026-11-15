@@ -31,36 +31,36 @@ export const IntroOverlay: React.FC = () => {
           MISSION<span className="title-dot">.</span>
         </h1>
         <p>
-          Chính phủ phê duyệt khoản đầu tư giả tưởng <strong>100 tỷ USD</strong> cho chương trình khám phá Sao Hỏa. Bạn
-          được bổ nhiệm làm kỹ sư trưởng nhiệm vụ: thiết kế vệ tinh, lựa chọn phương tiện phóng, điều khiển hành trình và
-          đưa tàu vào quỹ đạo mục tiêu.
+          Congress has authorized a fictional <strong>$100 billion investment</strong> for the Mars exploration initiative.
+          You are appointed Flight Director and Lead Systems Engineer: configure the orbiter, select the launch vehicle,
+          pilot the interplanetary trajectory, and insert the spacecraft into Mars science orbit.
         </p>
         <div className="intro-stats">
           <div>
-            <small>ĐIỂM ĐẾN</small>
+            <small>DESTINATION</small>
             <b>MARS ORBIT</b>
           </div>
           <div>
-            <small>VỆ TINH THAM CHIẾU</small>
+            <small>REFERENCE BUS</small>
             <b>NASA MRO</b>
           </div>
           <div>
-            <small>PHÓNG</small>
+            <small>LAUNCH WINDOW</small>
             <b>08 NOV 2028</b>
           </div>
         </div>
         <div className="intro-buttons">
           <button id="startBtn" className="btn-primary btn-start" onClick={startMission}>
-            BẮT ĐẦU NHIỆM VỤ <span>↗</span>
+            INITIALIZE MISSION <span>↗</span>
           </button>
           {hasSavedGame && (
             <button id="continueBtn" className="btn-secondary" onClick={continueMission}>
-              TIẾP TỤC NHIỆM VỤ →
+              RESUME MISSION →
             </button>
           )}
         </div>
         <div className="intro-disclaimer">
-          KỊCH BẢN CHÍNH PHỦ VÀ NGÀY PHÓNG LÀ HƯ CẤU • PHYSICS-INSPIRED EDUCATIONAL GAME (NEXT.JS EDITION)
+          GOVERNMENTAL CAMPAIGN SCENARIO AND LAUNCH DATES ARE FICTIONAL • PHYSICS-INSPIRED EDUCATIONAL GAME (NEXT.JS EDITION)
         </div>
       </div>
       <div className="intro-right-caption">

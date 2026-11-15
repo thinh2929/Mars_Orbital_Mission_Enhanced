@@ -14,101 +14,101 @@ export function getEndingDetails(state: GameState): EndingDetail {
       return {
         id: 'discovery',
         headline: 'GOOD ENDING · SCIENTIFIC DISCOVERY',
-        name: 'Đột phá khoa học',
+        name: 'Scientific Discovery',
         badge: 'EXCEPTIONAL',
         analysis:
-          'Tàu vào quỹ đạo chính xác, tiết kiệm nguồn lực và gửi ảnh từ bốn vùng địa hình. Dữ liệu khoa học vượt chỉ tiêu ban đầu.',
-        advice: 'Bạn đã tối ưu hóa thiết kế, quá trình bay và sản lượng khoa học.',
+          'Spacecraft achieved precise science orbit, conserved propellant margins, and downlinked high-resolution imagery across key surface regions. Primary and secondary science objectives exceeded.',
+        advice: 'Exemplary mission execution: optimal payload configuration, efficient trajectory navigation, and maximum scientific output.',
       };
     }
     if (score >= 78) {
       return {
         id: 'nominal',
         headline: 'GOOD ENDING · MISSION ACCOMPLISHED',
-        name: 'Nhiệm vụ hoàn thành',
+        name: 'Mission Accomplished',
         badge: 'MISSION SUCCESS',
         analysis:
-          'Các hệ thống chính còn hoạt động, vệ tinh đã ổn định tại quỹ đạo yêu cầu và gửi đủ ảnh về Trái Đất.',
-        advice: 'Có thể cải thiện độ chính xác quỹ đạo, nhiên liệu dự phòng và phạm vi quan sát.',
+          'All primary bus systems remain operational. The orbiter stabilized in the required 300 km polar science orbit and completed its target imaging campaign.',
+        advice: 'Strong performance. To maximize score, refine orbital circularization trim and preserve additional hydrazine for extended mission life.',
       };
     }
     return {
       id: 'survival',
-      headline: 'GOOD ENDING · NARROW SUCCESS',
-      name: 'Thành công trong gang tấc',
+      headline: 'GOOD ENDING · MARGINAL SUCCESS',
+      name: 'Marginal Success',
       badge: 'MINIMUM OBJECTIVES MET',
       analysis:
-        'Đạt mục tiêu truyền ảnh nhưng còn ít nhiên liệu hoặc sai số quỹ đạo đáng kể. Các mục tiêu tối thiểu được xác nhận.',
-      advice: 'Thử quỹ đạo chính xác hơn và chọn linh kiện phù hợp để tăng điểm.',
+        'Primary downlink targets met with critically depleted propellant reserves and non-optimal orbital geometry. Minimum criteria satisfied.',
+      advice: 'Review component mass margins and execute tighter trajectory burns to increase operational reserves.',
     };
   }
 
   const checks: [RegExp, string, string, string][] = [
     [
-      /lực đẩy|TWR|bệ phóng|rời bệ/i,
+      /thrust|TWR|pad|liftoff|lực đẩy|bệ phóng/i,
       'LAUNCH ABORT',
-      'TWR thấp hoặc sai chế độ động cơ khiến tên lửa không thể cất cánh.',
-      'Chọn tên lửa phù hợp với tải trọng và tăng throttle đủ để TWR > 1.',
+      'Low TWR or inadequate engine thrust prevented the launch vehicle from clearing the launch pad.',
+      'Select a launch vehicle suited to payload mass and maintain throttle > 85% to ensure liftoff TWR > 1.',
     ],
     [
-      /Max Q|khung tên lửa|khí động|quá tải/i,
+      /Max Q|structural|aerodynamic|khung tên lửa|khí động/i,
       'STRUCTURAL BREAKUP',
-      'Tải trọng khí động vượt khả năng kết cấu, có thể do lệch pitch/roll hoặc lực đẩy quá mạnh tại vùng khí quyển đặc.',
-      'Duy trì pitch/roll gần giá trị hướng dẫn và giảm throttle quanh Max Q.',
+      'Aerodynamic loads exceeded structural design limits (Max Q > 45 kPa) due to excessive dynamic pressure or off-nominal pitch/roll angles.',
+      'Throttle down through dense lower atmospheric layers near Max Q and maintain guidance pitch near 0°.',
     ],
     [
-      /hành lang phóng|lệch quá xa|Sai hướng phóng|rời hành lang/i,
+      /corridor|deviation|guidance|hành lang|lệch/i,
       'ASCENT GUIDANCE LOSS',
-      'Lực đẩy, nhiên liệu hoặc hướng điều khiển không cho phép đạt hành lang phóng an toàn.',
-      'Giữ lực đẩy đủ cao, chọn phương tiện phù hợp và hạn chế lệch hướng.',
+      'Launch vehicle breached the ±18 units flight corridor boundary during atmospheric ascent.',
+      'Use the TVC gimbal lever to counteract aerodynamic drift and keep trajectory centered along the flight corridor.',
     ],
     [
-      /tầng trên|CENTAUR|TMI|Trans-Mars|quỹ đạo chờ/i,
+      /Centaur|upper stage|TMI|parking orbit|Trans-Mars|tầng trên|quỹ đạo chờ/i,
       'EARTH DEPARTURE FAILURE',
-      'Đốt tầng trên không đủ hoặc vượt giới hạn, khiến quỹ đạo chờ/chuyển tiếp không đạt điều kiện.',
-      'Kiểm tra dự trữ nhiên liệu Centaur và chọn Δv/góc đốt gần hướng dẫn.',
+      'Centaur upper stage burn failed or propellant was exhausted before reaching required orbital or Earth escape velocity.',
+      'Verify Centaur propellant margin and execute burn delta-V within prescribed tolerances.',
     ],
     [
-      /bay lệch|điểm tiếp cận|lướt qua sao hỏa/i,
+      /flyby|miss distance|approach|lướt qua/i,
       'MARS FLYBY',
-      'Sai số hiệu chỉnh hành trình quá lớn; tàu đi ngang qua Sao Hỏa mà không thể bắt vào quỹ đạo.',
-      'Giảm sai lệch along-track/cross-track; chú ý nhiên liệu cho các hiệu chỉnh tiếp theo.',
+      'Midcourse trajectory correction error was too large; spacecraft flew past Mars without entering its gravitational sphere of influence.',
+      'Trim along-track and cross-track delta-V carefully to keep Mars miss distance under 70,000 km.',
     ],
     [
-      /Nhiệt độ|hãm khí quyển|aerobraking|periapsis/i,
+      /overheat|thermal|aerobraking|periapsis|nhiệt độ|hãm khí quyển/i,
       'ATMOSPHERIC OVERHEAT',
-      'Quỹ đạo hãm khí quyển quá thấp làm tăng tải nhiệt, đặc biệt với cấu hình cánh pin lớn.',
-      'Sử dụng periapsis an toàn (thường 140–165 km trong game), hoặc thay đổi cấu hình năng lượng.',
+      'Aerobraking periapsis dipped too deep into the Martian atmosphere, causing thermal structural failure of the solar array hinges.',
+      'Maintain periapsis within the safe aerobraking corridor (140–165 km) to balance deceleration and thermal dissipation.',
     ],
     [
-      /nguồn điện|mất điện|pin cạn|năng lượng/i,
+      /power|blackout|battery|electric|nguồn điện|pin cạn/i,
       'SPACECRAFT BLACKOUT',
-      'Không có năng lượng duy trì các hệ thống sống còn. Thiếu điện có thể do chưa mở cánh pin, vùng tối hoặc linh kiện quá tải.',
-      'Triển khai cánh pin ngay sau tách MRO, giữ pin dự phòng và cân bằng tiêu thụ điện.',
+      'Bus power depleted. Solar arrays un-deployed, prolonged eclipse pass, or electrical load exceeded battery storage.',
+      'Deploy solar arrays immediately after cruise separation and monitor bus power drain during science operations.',
     ],
     [
-      /nhiên liệu|propellant|cạn/i,
+      /propellant|fuel|exhaustion|nhiên liệu|cạn/i,
       'PROPELLANT EXHAUSTION',
-      'Nhiên liệu đã không đủ để thực hiện phần Δv yêu cầu, nên vệ tinh không thể tiếp tục nhiệm vụ.',
-      'Chọn bình chứa phù hợp, hạn chế burn không cần thiết và dùng aerobraking hiệu quả.',
+      'Hydrazine reserves depleted before completing mission-critical delta-V burns.',
+      'Select high-capacity propellant tanks and execute burns within optimal fuel windows.',
     ],
     [
-      /sai mục tiêu|quỹ đạo sai|quỹ đạo khoa học/i,
+      /orbital insertion|inclination|target orbit|quỹ đạo sai/i,
       'ORBITAL INSERTION ERROR',
-      'Độ cao hoặc độ nghiêng quỹ đạo cuối vượt giới hạn nghiệm thu của nhiệm vụ.',
-      'Đối chiếu Δv circularization với viễn điểm hiện tại và chọn nghiêng gần 93°.',
+      'Final science orbit altitude (300 ± 25 km) or polar inclination (93 ± 2°) failed mission acceptance criteria.',
+      'Match circularization trim delta-V with current apoapsis and calibrate inclination to 93°.',
     ],
     [
-      /sao hỏa|Mars Orbit|MOI|bắt vào quỹ đạo/i,
+      /capture|MOI|Mars Orbit|bắt vào quỹ đạo/i,
       'MARS CAPTURE FAILURE',
-      'Đốt hãm tốc sai khiến tàu không bị Sao Hỏa giữ lại hoặc đi vào vùng quỹ đạo nguy hiểm.',
-      'Dành đủ nhiên liệu cho MOI và giữ Δv, góc đốt trong hành lang an toàn.',
+      'Improper Mars Orbit Insertion (MOI) burn failed to achieve gravitational capture around Mars.',
+      'Reserve sufficient propellant for MOI and keep delta-V within 855–1025 m/s with gimbal angle ≤ ±6°.',
     ],
     [
-      /ăng.ten|tín hiệu|truyền dữ liệu/i,
+      /communications|antenna|downlink|tín hiệu|ăng-ten/i,
       'COMMUNICATIONS LOSS',
-      'Vệ tinh không thể gửi dữ liệu về Trái Đất dù đã đến được Sao Hỏa.',
-      'Kiểm tra ăng-ten, nguồn điện và xung đột điện từ radar.',
+      'High-Gain Antenna was not deployed or electrical fault prevented data downlink to the Deep Space Network.',
+      'Deploy HGA antenna, verify battery health, and resolve RF conflicts before scheduled downlink passes.',
     ],
   ];
 
@@ -116,7 +116,7 @@ export function getEndingDetails(state: GameState): EndingDetail {
     if (pattern.test(reason)) {
       return {
         id,
-        headline: 'BAD ENDING · ' + id,
+        headline: 'MISSION FAILURE · ' + id,
         name: id,
         badge: 'MISSION FAILURE',
         analysis,
@@ -127,11 +127,11 @@ export function getEndingDetails(state: GameState): EndingDetail {
 
   return {
     id: 'mission-loss',
-    headline: 'BAD ENDING · MISSION LOSS',
-    name: 'Nhiệm vụ thất bại',
+    headline: 'MISSION FAILURE · VEHICLE LOSS',
+    name: 'Mission Terminated',
     badge: 'SYSTEM FAILURE',
     analysis:
-      'Một điều kiện bay hoặc vận hành thiết yếu không được thỏa mãn. Hệ thống đã chấm dứt nhiệm vụ.',
-    advice: 'Xem lại sự kiện cuối cùng, chọn cấu hình khác và kiểm tra các mốc an toàn.',
+      'A critical flight parameter or operating limit was breached. Mission Control terminated the flight sequence.',
+    advice: 'Review the final flight telemetry log and adjust spacecraft loadout and flight parameters.',
   };
 }

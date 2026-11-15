@@ -59,7 +59,7 @@ export const Header: React.FC = () => {
           className="icon-btn"
           id="audioBtn"
           onClick={toggleSound}
-          title="Bật/tắt âm thanh"
+          title="Toggle audio"
         >
           {soundOn ? '♫' : '♪'}
         </button>
@@ -67,7 +67,7 @@ export const Header: React.FC = () => {
           className="icon-btn"
           id="fullscreenBtn"
           onClick={toggleFullscreen}
-          title="Toàn màn hình"
+          title="Toggle fullscreen"
         >
           {isFullscreen ? '⤢' : '⛶'}
         </button>
@@ -75,7 +75,7 @@ export const Header: React.FC = () => {
           className="icon-btn"
           id="helpBtn"
           onClick={() => setActiveModal('help')}
-          title="Hướng dẫn"
+          title="Flight Manual"
         >
           ?
         </button>
@@ -83,7 +83,7 @@ export const Header: React.FC = () => {
           className="outline-btn"
           id="restartBtn"
           onClick={() => setActiveModal('confirm-restart')}
-          title="Chơi lại từ đầu"
+          title="Restart simulation"
         >
           ↺ RESTART
         </button>

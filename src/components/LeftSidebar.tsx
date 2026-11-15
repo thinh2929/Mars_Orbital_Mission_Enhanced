@@ -14,12 +14,12 @@ export const LeftSidebar: React.FC = () => {
       <div className="sidebar-inner">
         <div className="eyebrow">FLIGHT DIRECTOR CONSOLE</div>
         <h2 className="sidebar-head">
-          Tổng quan nhiệm vụ
+          Mission Overview
           <span className="micro-status">● UPLINK ACTIVE</span>
         </h2>
         <div className="section-rule"></div>
 
-        <div className="mission-label">CHIẾN DỊCH</div>
+        <div className="mission-label">MISSION CAMPAIGN</div>
         <strong className="mission-name">
           MARS ORBITAL<br />RECONNAISSANCE
         </strong>
@@ -58,7 +58,7 @@ export const LeftSidebar: React.FC = () => {
         </div>
         <div id="eventLog" className="event-log">
           {state.logs.length === 0 ? (
-            <div className="log-item">Chưa có sự kiện nào.</div>
+            <div className="log-item">No telemetry events recorded.</div>
           ) : (
             state.logs.slice(0, 8).map((log, i) => (
               <div

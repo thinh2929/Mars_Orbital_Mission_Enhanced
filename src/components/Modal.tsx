@@ -25,11 +25,11 @@ export const Modal: React.FC = () => {
       <div className="modal" role="dialog" aria-modal="true">
         <div className="modal-card">
           <div className="modal-topline">MISSION OPERATIONS</div>
-          <h2>Bắt đầu nhiệm vụ mới?</h2>
-          <p>Tiến trình cũ sẽ bị thay thế. Bạn sẽ quay lại màn hình lắp ráp vệ tinh.</p>
+          <h2>Initialize New Mission?</h2>
+          <p>Current flight telemetry and progress will be reset. You will return to the Spacecraft Assembly console.</p>
           <div className="modal-actions">
             <button className="btn-secondary" onClick={closeModal}>
-              HỦY
+              CANCEL
             </button>
             <button
               className="btn-danger"
@@ -38,7 +38,7 @@ export const Modal: React.FC = () => {
                 resetMission();
               }}
             >
-              KHỞI ĐỘNG LẠI
+              CONFIRM RESTART
             </button>
           </div>
         </div>
@@ -50,52 +50,46 @@ export const Modal: React.FC = () => {
     return (
       <div className="modal" role="dialog" aria-modal="true">
         <div className="modal-card manual">
-          <div className="modal-topline">MOR–28 / FIELD MANUAL</div>
-          <h2>Sổ tay điều khiển</h2>
+          <div className="modal-topline">MOR–28 / FLIGHT MANUAL</div>
+          <h2>Mission Flight Manual</h2>
           <p>
-            Đây là trò chơi <b>mission-based 2D</b>. Mỗi quyết định thay đổi điều kiện qua màn hình trạm điều khiển. Chỉ
-            thực hiện lệnh ở thanh dưới khi hệ thống đã sẵn sàng.
+            Welcome to the <b>Mars Orbital Mission</b> flight simulator. Every design choice and guidance command directly impacts real-time spacecraft telemetry. Authorize operations only when system pre-requisites are nominal.
           </p>
           <ol>
             <li>
-              <b>Assembly:</b> chọn một trong 3 biến thể ở mỗi 5 khe, chọn tên lửa và hoàn thành preflight.
+              <b>Assembly:</b> Select 1 of 3 options across 5 spacecraft module slots, choose an Atlas V or heavy launcher, and verify preflight checks.
             </li>
             <li>
-              <b>Launch:</b> throttle phải cho TWR &gt; 1; góc lái tốt là 0° so với guidance. Đạt 101 km và không vượt Max
-              Q.
+              <b>Ascent:</b> Adjust throttle to maintain liftoff TWR &gt; 1.0; steer pitch toward guidance corridor. Reach 101 km altitude without exceeding Max Q (45 kPa).
             </li>
             <li>
-              <b>Separation:</b> chờ MECO rồi tách tầng 1, khởi động RL-10, tách fairing.
+              <b>Separation:</b> Await booster MECO at 101 km, jettison stage 1 booster, ignite Centaur RL-10, and jettison payload fairing.
             </li>
             <li>
-              <b>Parking &amp; TMI:</b> dùng slider burn Δv và góc lái, so với guidance của màn hình.
+              <b>Parking &amp; TMI:</b> Calibrate upper stage burn delta-V and gimbal pitch according to target corridor indicators.
             </li>
             <li>
-              <b>Cruise:</b> hiệu chỉnh Δv dọc và ngang để điểm tiếp cận Mars đủ gần.
+              <b>Cruise Navigation:</b> Execute midcourse trajectory trim burns (along-track and cross-track) to reduce Mars encounter miss distance below 70,000 km.
             </li>
             <li>
-              <b>Mars capture:</b> phanh MOI, thực hiện aerobraking ở periapsis an toàn rồi circularization.
+              <b>Mars Capture:</b> Execute Mars Orbit Insertion (MOI) retro-burn into capture orbit, complete aerobraking passes through upper atmosphere, and execute circularization burn.
             </li>
             <li>
-              <b>Science:</b> mở solar arrays, mở antenna, quản lý điện. Chụp và truyền ảnh về Trái Đất (số ảnh tùy thuộc dung lượng bộ nhớ SSR và loại máy ảnh).
+              <b>Science Operations:</b> Deploy solar arrays and High-Gain Antenna. Balance power and memory to expose science payloads and downlink imaging data to Earth (capacity depends on SSR storage and payload optics).
             </li>
             <li>
-              <b>Năng lượng:</b> sau khi tách vệ tinh, mở cánh pin và ăng-ten ngay trong giai đoạn Cruise; chú ý % pin,
-              vùng tối và rủi ro hãm khí quyển.
+              <b>Power Management:</b> Deploy solar wings and HGA boom during early cruise; monitor battery state of charge (SoC), eclipse passes, and aerobraking thermal dissipation limits.
             </li>
             <li>
-              <b>Ending:</b> có nhiều good/bad ending. Kết thúc thất bại sẽ ghi nguyên nhân trực tiếp, phân tích kỹ thuật
-              và cách tránh.
+              <b>Mission Outcomes:</b> Multiple success and failure outcomes. Terminated flights provide causal telemetry analysis, post-incident reviews, and mitigation recommendations.
             </li>
           </ol>
           <p>
-            Đường <b style={{ color: '#cadde8' }}>đứt mờ</b> là tuyến mục tiêu. Đường{' '}
-            <b style={{ color: '#7de4cf' }}>liền xanh</b> là tuyến thực tế. Ngưỡng quỹ đạo và giá cả trong game là mô
-            hình đơn giản hóa; không phải phương trình điều khiển nhiệm vụ MRO thực.
+            <b style={{ color: '#cadde8' }}>Dashed / shaded zones</b> denote target corridors. <b style={{ color: '#7de4cf' }}>Solid lines</b> trace real-time flight vectors. Orbital tolerances and costs are simplified educational models.
           </p>
           <div className="modal-actions">
             <button className="btn-primary" onClick={closeModal}>
-              ĐÃ HIỂU
+              ACKNOWLEDGE
             </button>
           </div>
         </div>
@@ -120,59 +114,59 @@ export const Modal: React.FC = () => {
           <h2>{e.name}</h2>
           <p className="end-intro">
             {good
-              ? 'Chúc mừng: dữ liệu nghiên cứu đã được Trái Đất xác nhận.'
-              : `Nhiệm vụ đã dừng tại: ${state.mission.failurePhase || 'Nhiệm vụ Sao Hỏa'}`}
+              ? 'Congratulations: Mars reconnaissance telemetry and imaging downlink verified by Deep Space Network.'
+              : `Flight operations terminated during: ${state.mission.failurePhase || 'Mars Mission'}`}
           </p>
 
           <div className="mission-summary">
             <div className="summary-cell">
-              <small>ENDING</small>
+              <small>EVALUATION</small>
               <strong className={good ? 'status-good' : 'status-bad'}>{e.badge}</strong>
             </div>
             <div className="summary-cell">
-              <small>QUỸ ĐẠO MARS</small>
-              <strong>{c.finalized ? c.finalAlt.toFixed(1) + ' km' : 'CHƯA ĐẠT'}</strong>
+              <small>MARS ORBIT</small>
+              <strong>{c.finalized ? c.finalAlt.toFixed(1) + ' km' : 'UNREACHED'}</strong>
             </div>
             <div className="summary-cell">
-              <small>ẢNH ĐÃ NHẬN</small>
+              <small>DOWNLINKED</small>
               <strong>{s.returned.length} / {targetPhotos}</strong>
             </div>
             <div className="summary-cell">
-              <small>ĐIỂM NHIỆM VỤ</small>
+              <small>MISSION SCORE</small>
               <strong>{good ? state.mission.score + '/100' : '—'}</strong>
             </div>
           </div>
 
           {!good && (
             <div className="alert-card bad">
-              <strong>NGUYÊN NHÂN TRỰC TIẾP</strong>
+              <strong>ROOT CAUSE TELEMETRY</strong>
               <p>{state.mission.reason}</p>
             </div>
           )}
 
           <div className="end-analysis">
             <section>
-              <h3>{good ? 'VÌ SAO THÀNH CÔNG?' : 'PHÂN TÍCH SỰ CỐ'}</h3>
+              <h3>{good ? 'MISSION SUCCESS ANALYSIS' : 'ANOMALY POST-MORTEM'}</h3>
               <p>{e.analysis}</p>
             </section>
             <section>
-              <h3>{good ? 'CẢI THIỆN NHIỆM VỤ' : 'CÁCH TRÁNH THẤT BẠI'}</h3>
+              <h3>{good ? 'MISSION ENHANCEMENTS' : 'FAILURE MITIGATION'}</h3>
               <p>{e.advice}</p>
             </section>
           </div>
 
           <div className="end-metrics">
             <span>
-              FUEL MRO: <b>{Math.max(0, s.prop).toFixed(0)} kg</b>
+              MRO PROPELLANT: <b>{Math.max(0, s.prop).toFixed(0)} kg</b>
             </span>
             <span>
-              BATTERY: <b>{Math.round(s.batteryWh || 0)} Wh</b>
+              BATTERY STORAGE: <b>{Math.round(s.batteryWh || 0)} Wh</b>
             </span>
             <span>
-              MAX Q: <b>{state.launch.maxQ.toFixed(1)} kPa</b>
+              MAX Q LOAD: <b>{state.launch.maxQ.toFixed(1)} kPa</b>
             </span>
             <span>
-              BUDGET: <b>${money(b.cost)}</b>
+              TOTAL BUDGET: <b>${money(b.cost)}</b>
             </span>
           </div>
 
@@ -189,7 +183,7 @@ export const Modal: React.FC = () => {
                         (ASSETS as Record<string, string>)['mars' + (x.region + 1)] ||
                         ASSETS.mars1
                       }
-                      alt={`Ảnh bề mặt Sao Hỏa vùng ${x.region + 1}`}
+                      alt={`Mars surface frame region ${x.region + 1}`}
                     />
                     <figcaption>
                       IMAGE {String(x.id).padStart(2, '0')} • {TARGET_REGIONS[x.region]?.name || 'Mars'} • RECEIVED
@@ -209,11 +203,11 @@ export const Modal: React.FC = () => {
                   retryStage();
                 }}
               >
-                ↻ CHƠI LẠI GIAI ĐOẠN NÀY
+                ↻ RETRY THIS STAGE
               </button>
             )}
             <button className="btn-secondary" onClick={closeModal}>
-              XEM LOG NHIỆM VỤ
+              REVIEW FLIGHT LOGS
             </button>
             <button
               className="btn-primary"
@@ -222,7 +216,7 @@ export const Modal: React.FC = () => {
                 resetMission();
               }}
             >
-              CHƠI LẠI / THỬ LỰA CHỌN KHÁC
+              NEW MISSION / RECONFIGURE
             </button>
           </div>
         </div>

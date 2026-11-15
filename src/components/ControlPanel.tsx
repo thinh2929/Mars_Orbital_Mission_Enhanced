@@ -4,6 +4,7 @@ import React from 'react';
 import { useGame } from '../context/GameContext';
 import { SLOTS, LAUNCHERS, TARGET_REGIONS } from '../lib/constants';
 import { Physics } from '../lib/physics';
+import { LaunchCockpit } from './LaunchCockpit';
 
 export const ControlPanel: React.FC = () => {
   const {
@@ -40,15 +41,15 @@ export const ControlPanel: React.FC = () => {
   const money = (n: number) => (n / 1000).toFixed(2) + 'B';
 
   const controlHeadingText = {
-    assembly: 'Lắp ráp vệ tinh & chọn tên lửa',
-    launch: 'Điều khiển lực đẩy và hướng phóng',
-    separation: 'Chuỗi tách tầng an toàn',
-    parking: 'Đốt động cơ đưa vào quỹ đạo chờ',
-    tmi: 'Đốt chuyển tiếp và giải phóng MRO',
-    cruise: 'Hiệu chỉnh quỹ đạo xuyên hành tinh',
-    capture: 'Hãm tốc và xác nhận quỹ đạo Sao Hỏa',
-    science: 'Chụp ảnh & truyền dữ liệu về Trái Đất',
-    end: 'Báo cáo nhiệm vụ',
+    assembly: 'Spacecraft Assembly & Launcher Selection',
+    launch: 'Main Engine Thrust & Ascent Guidance',
+    separation: 'Stage Separation & Centaur Deployment',
+    parking: 'Centaur Earth Parking Orbit Burn',
+    tmi: 'Trans-Mars Injection & MRO Deployment',
+    cruise: 'Interplanetary Trajectory Navigation',
+    capture: 'Mars Orbit Insertion & Circularization',
+    science: 'Science Reconnaissance & Earth Downlink',
+    end: 'Mission Debrief & Flight Evaluation',
   }[state.phase];
 
   const stageHintText = {
@@ -74,19 +75,19 @@ export const ControlPanel: React.FC = () => {
           className={state.buildTab === 'component' ? 'btn-primary' : 'btn-secondary'}
           onClick={() => setBuildTab('component')}
         >
-          01 / LỰA CHỌN LINH KIỆN
+          01 / SPACECRAFT MODULES
         </button>
         <button
           className={state.buildTab === 'rocket' ? 'btn-primary' : 'btn-secondary'}
           onClick={() => setBuildTab('rocket')}
         >
-          02 / PHƯƠNG TIỆN PHÓNG
+          02 / LAUNCH VEHICLE
         </button>
         <button
           className={state.buildTab === 'test' ? 'btn-primary' : 'btn-secondary'}
           onClick={() => setBuildTab('test')}
         >
-          03 / KIỂM TRA TRƯỚC PHÓNG
+          03 / PREFLIGHT CHECK
         </button>
       </div>
     );
@@ -111,7 +112,7 @@ export const ControlPanel: React.FC = () => {
 
             <div>
               <div className="control-description">
-                KHE {f + 1} — {sl.desc.toUpperCase()}. Chọn cấu hình để thay đổi khối lượng, hiệu năng và rủi ro.
+                SLOT {f + 1} — {sl.desc.toUpperCase()}. Select configuration to balance mass, power, and mission risk.
               </div>
               <div className="control-grid">
                 {choices.map((opt, j) => (
@@ -121,7 +122,7 @@ export const ControlPanel: React.FC = () => {
                     onClick={() => setSlotChoice(f, j)}
                   >
                     <span className="grade">
-                      PHƯƠNG ÁN {'ABC'[j]} • {opt.kind}
+                      OPTION {'ABC'[j]} • {opt.kind}
                     </span>
                     <b>{opt.name}</b>
                     <small>{opt.description}</small>
@@ -130,7 +131,7 @@ export const ControlPanel: React.FC = () => {
                 ))}
               </div>
               <div className="details-note">
-                <b>RỦI RO: </b>
+                <b>RISK FACTOR: </b>
                 {choices[state.slot[f]].issue}
               </div>
             </div>
@@ -144,7 +145,7 @@ export const ControlPanel: React.FC = () => {
         <div>
           {nav}
           <p className="control-description">
-            Atlas V-401 là cấu hình có thông số theo PDF; hai lựa chọn khác là giả tưởng cho cân bằng gameplay.
+            Atlas V-401 is the documented baseline; alternative options provide fictional gameplay balancing.
           </p>
           <div className="rocket-options">
             {LAUNCHERS.map((r, i) => (
@@ -163,27 +164,27 @@ export const ControlPanel: React.FC = () => {
             ))}
           </div>
           <div className="hint-line">
-            Đang chọn <b>{b.launcher.name}</b> • TWR: {b.twr.toFixed(2)} • FAIRING Ø {b.launcher.fairing.toFixed(1)} m.
+            Selected <b>{b.launcher.name}</b> • TWR: {b.twr.toFixed(2)} • FAIRING Ø {b.launcher.fairing.toFixed(1)} m.
           </div>
         </div>
       );
     }
 
     const checks: [string, boolean, string][] = [
-      ['Tổng tải', b.weightOK, `${fmt(b.mass)} / ${fmt(b.launcher.max)} kg`],
+      ['Payload Wet Mass', b.weightOK, `${fmt(b.mass)} / ${fmt(b.launcher.max)} kg`],
       [
         'Fairing',
         b.fairingOK,
-        `gập ${b.stowedWidth.toFixed(2)} m / fairing hữu dụng ${(b.launcher.fairing - 0.14).toFixed(2)} m`,
+        `stowed ${b.stowedWidth.toFixed(2)} m / usable ${(b.launcher.fairing - 0.14).toFixed(2)} m`,
       ],
-      ['Ngân sách nhiệm vụ', b.priceOK, `$${money(b.cost)} / $${money(state.budget)}`],
+      ['Mission Budget', b.priceOK, `${money(b.cost)} / ${money(state.budget)}`],
       ['TWR', b.twr > 1.05, `${b.twr.toFixed(2)} (>1.05)`],
       [
-        'Nguồn điện',
+        'Electrical Power',
         true,
-        b.powerOK ? `${b.gen} W ≥ ${b.draw} W` : `${b.gen} W < ${b.draw} W; cần lập lịch thiết bị`,
+        b.powerOK ? `${b.gen} W ≥ ${b.draw} W` : `${b.gen} W < ${b.draw} W; instrument scheduling required`,
       ],
-      ['Tính toàn vẹn', true, 'Cấu hình gập và gia tốc: game model'],
+      ['Structural Integrity', true, 'Stowed aero-acoustic tolerances: nominal'],
     ];
 
     const canPreflight = b.weightOK && b.priceOK && b.fairingOK && b.twr > 1.05;
@@ -201,17 +202,17 @@ export const ControlPanel: React.FC = () => {
         <div className="control-flex">
           <p className="control-description" style={{ margin: 0 }}>
             {!b.powerOK
-              ? 'Cảnh báo: nguồn không đủ cho tất cả thiết bị chạy cùng lúc. Người chơi phải tắt radar khi chụp ảnh.'
-              : 'Hệ thống nguồn nominal.'}
+              ? 'Warning: Insufficient power for concurrent instrument operations. Radar must be powered down during imaging exposures.'
+              : 'Electrical power margins nominal.'}
             <br />
-            Trọng lượng vệ tinh gồm 892 kg khô khác đã điều chỉnh theo cấu hình, thiết bị khoa học và chất đẩy.
+            Spacecraft wet mass includes 892 kg base bus, modular science payloads, and hydrazine propellant.
           </p>
           <button
             className="btn-primary"
             disabled={!canPreflight}
             onClick={() => executeAction('preflight')}
           >
-            XÁC NHẬN KIỂM TRA &amp; PHÓNG
+            VERIFY PREFLIGHT &amp; LAUNCH
           </button>
         </div>
       </div>
@@ -219,133 +220,14 @@ export const ControlPanel: React.FC = () => {
   };
 
   const renderLaunchControls = () => {
-    if (l.cutoff) {
-      return (
-        <div>
-          <div className="alert-card good">
-            ✓ Đạt mốc 101 km — động cơ tầng 1 đã ngừng (MECO). Trạng thái tách tầng an toàn.
-          </div>
-          <button className="btn-primary" onClick={() => executeAction('to-separation')}>
-            TIẾP TỤC: TÁCH TẦNG →
-          </button>
-        </div>
-      );
-    }
-
     return (
-      <div>
-        <p className="control-description">
-          Khởi động RD-180 khi lực đẩy lớn hơn trọng lượng. Giữ pitch/roll ổn định; tránh vượt Max Q 45 kPa (ngưỡng
-          gameplay).
-        </p>
-        <div className="flight-controls triple">
-          <div className="range-group">
-            <label htmlFor="throttle">
-              <span>THROTTLE / LỰC ĐẨY</span>
-              <output>{l.throttle}%</output>
-            </label>
-            <input
-              id="throttle"
-              type="range"
-              min={55}
-              max={100}
-              step={1}
-              value={l.throttle}
-              disabled={l.cutoff}
-              onChange={(e) => updateRange('throttle', Number(e.target.value))}
-            />
-          </div>
-
-          <div className="range-group">
-            <label htmlFor="guidance">
-              <span>BẺ LÁI VECTOR PITCH</span>
-              <output>{l.guidance}°</output>
-            </label>
-            <input
-              id="guidance"
-              type="range"
-              min={-25}
-              max={25}
-              step={1}
-              value={l.guidance}
-              disabled={l.cutoff}
-              onChange={(e) => updateRange('guidance', Number(e.target.value))}
-            />
-          </div>
-
-          <div className="range-group">
-            <label htmlFor="roll">
-              <span>ROLL / GÓC XOAY</span>
-              <output>{l.roll}°</output>
-            </label>
-            <input
-              id="roll"
-              type="range"
-              min={-20}
-              max={20}
-              step={1}
-              value={l.roll}
-              disabled={l.cutoff}
-              onChange={(e) => updateRange('roll', Number(e.target.value))}
-            />
-          </div>
-
-          <div>
-            <button
-              className={l.ignited ? 'btn-secondary' : 'btn-primary'}
-              disabled={l.ignited}
-              onClick={() => executeAction('ignite')}
-            >
-              {l.ignited ? 'ENGINE ON • ASCENDING' : 'IGNITE RD-180 / LIFTOFF'}
-            </button>
-          </div>
-        </div>
-
-        {l.ignited && !l.cutoff && (
-          <div className="task-row" style={{ marginTop: 8 }}>
-            <span style={{ fontSize: 9, color: '#88a6b6', letterSpacing: '0.1em' }}>ĐIỀU CHỈNH HƯỚNG BAY:</span>
-            <button
-              type="button"
-              className="btn-secondary"
-              style={{ minHeight: 28, padding: '4px 10px', fontSize: 10 }}
-              onClick={() => updateRange('guidance', Math.max(-25, l.guidance - 2))}
-            >
-              ◀ LÁI TRÁI (-2°)
-            </button>
-            <button
-              type="button"
-              className="btn-secondary"
-              style={{ minHeight: 28, padding: '4px 10px', fontSize: 10 }}
-              onClick={() => updateRange('guidance', 0)}
-            >
-              CÂN BẰNG (0°)
-            </button>
-            <button
-              type="button"
-              className="btn-secondary"
-              style={{ minHeight: 28, padding: '4px 10px', fontSize: 10 }}
-              onClick={() => updateRange('guidance', Math.min(25, l.guidance + 2))}
-            >
-              LÁI PHẢI (+2°) ▶
-            </button>
-          </div>
-        )}
-
-        <div className="hint-line">
-          {l.ignited ? (
-            <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px 12px' }}>
-              <span>ĐỘ CAO: <b>{l.alt.toFixed(1)} km</b> / 101 km</span>
-              <span>ÁP SUẤT MAX Q: <b className={l.maxQ < 45 ? 'status-good' : 'status-bad'}>{l.maxQ.toFixed(1)} kPa</b></span>
-              <span>LỆCH QUỸ ĐẠO: <b className={Math.abs(l.deviation) < 6 ? 'status-good' : 'status-warn'}>{l.deviation > 0 ? '+' : ''}{l.deviation.toFixed(1)} units</b> (Giới hạn: ±18)</span>
-              <span>LỰC ĐẨY: <b>{l.throttle}%</b></span>
-            </div>
-          ) : (
-            <>
-              TWR ở 100% công suất: <b>{b.twr.toFixed(2)}</b>. Throttle quá thấp có thể không rời bệ phóng.
-            </>
-          )}
-        </div>
-      </div>
+      <LaunchCockpit
+        launch={l}
+        build={b}
+        guidanceUnlocked={guidanceUnlocked}
+        updateRange={updateRange}
+        executeAction={executeAction}
+      />
     );
   };
 
@@ -353,26 +235,26 @@ export const ControlPanel: React.FC = () => {
     const sep = state.sep;
     let actionBtn = (
       <button className="btn-primary" onClick={() => executeAction('stage-sep')}>
-        XÁC NHẬN TÁCH TẦNG 1
+        CONFIRM STAGE 1 SEPARATION
       </button>
     );
 
     if (sep.stage && !sep.centaur) {
       actionBtn = (
         <button className="btn-primary" onClick={() => executeAction('centaur-ignite')}>
-          KHỞI ĐỘNG ĐỘNG CƠ RL-10
+          IGNITE CENTAUR RL-10 ENGINE
         </button>
       );
     } else if (sep.centaur && !sep.fairing) {
       actionBtn = (
         <button className="btn-primary" onClick={() => executeAction('fairing-sep')}>
-          TÁCH FAIRING
+          JETTISON FAIRING
         </button>
       );
     } else if (sep.stage && sep.centaur && sep.fairing) {
       actionBtn = (
         <button className="btn-primary" onClick={() => executeAction('to-parking')}>
-          TIẾP TỤC QUỸ ĐẠO CHỜ →
+          PROCEED: PARKING ORBIT INSERTION →
         </button>
       );
     }
@@ -380,7 +262,7 @@ export const ControlPanel: React.FC = () => {
     return (
       <div>
         <p className="control-description">
-          Trình tự: MECO → tách tầng 1 → khởi động Centaur → tách vỏ bảo vệ khi đạt độ cao an toàn.
+          Sequence: MECO → Booster Jettison → Centaur Ignition → Fairing Jettison once above 101 km.
         </p>
         <div className="mini-pair">
           <span>
@@ -411,10 +293,10 @@ export const ControlPanel: React.FC = () => {
       return (
         <div>
           <div className="alert-card good">
-            ✓ Quỹ đạo chờ đã xác nhận. Cận điểm {o.peri.toFixed(1)} km • viễn điểm {o.apo.toFixed(1)} km.
+            ✓ Parking orbit confirmed: Perigee {o.peri.toFixed(1)} km • Apogee {o.apo.toFixed(1)} km.
           </div>
           <button className="btn-primary" onClick={() => executeAction('to-tmi')}>
-            TIẾP TỤC: TRANS-MARS INJECTION →
+            PROCEED: TRANS-MARS INJECTION →
           </button>
         </div>
       );
@@ -423,8 +305,8 @@ export const ControlPanel: React.FC = () => {
     return (
       <div>
         <p className="control-description">
-          Centaur thực hiện đốt quỹ đạo chờ mục tiêu <b>148 × 185 km</b>. Đường đứt mờ cho biết quỹ đạo yêu cầu. Điều
-          chỉnh Δv và góc hướng đốt.
+          Centaur upper stage burn into <b>148 × 185 km</b> parking orbit. Shaded green zone denotes target orbit. Adjust
+          burn Δv and gimbal pitch angle.
         </p>
         <div className="flight-controls">
           <div className="range-group">
@@ -445,7 +327,7 @@ export const ControlPanel: React.FC = () => {
 
           <div className="range-group">
             <label htmlFor="park-angle">
-              <span>LỆCH HƯỚNG ĐỐT</span>
+              <span>GIMBAL PITCH ANGLE</span>
               <output>{o.angle}°</output>
             </label>
             <input
@@ -460,12 +342,12 @@ export const ControlPanel: React.FC = () => {
           </div>
 
           <button className="btn-primary" onClick={() => executeAction('park-exec')}>
-            THỰC HIỆN BURN →
+            EXECUTE PARKING BURN →
           </button>
         </div>
 
         <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-          Khuyến nghị gameplay: <b>335 m/s</b> và <b>0°</b>. Một sai lệch lớn làm mất quỹ đạo chờ.
+          Guidance targets: <b>335 m/s</b> • <b>0°</b>. Off-nominal burns result in suborbital decay or excessive apogee.
         </div>
       </div>
     );
@@ -476,7 +358,7 @@ export const ControlPanel: React.FC = () => {
       return (
         <div>
           <div className="alert-card good">
-            ✓ Đã thoát khỏi quỹ đạo chờ Trái Đất. Centaur MECO; MRO đã sẵn sàng để tách khỏi tầng trên.
+            ✓ Earth parking orbit departure confirmed. Centaur MECO; MRO spacecraft ready for separation.
           </div>
           <div className="task-row">
             <span className="mini-pair">
@@ -488,7 +370,7 @@ export const ControlPanel: React.FC = () => {
               className="btn-primary"
               onClick={() => executeAction(t.detached ? 'to-cruise' : 'detach')}
             >
-              {t.detached ? 'ĐI TỚI HÀNH TRÌNH →' : 'TÁCH VỆ TINH MRO'}
+              {t.detached ? 'PROCEED TO CRUISE →' : 'SEPARATE MRO SPACECRAFT'}
             </button>
           </div>
         </div>
@@ -498,13 +380,13 @@ export const ControlPanel: React.FC = () => {
     return (
       <div>
         <p className="control-description">
-          Đốt động cơ Centaur lần hai (TMI) để đưa vệ tinh vào quỹ đạo chuyển tiếp đến Sao Hỏa. Cắt động cơ trước khi tách
+          Second Centaur burn (TMI) injects spacecraft into trans-Mars trajectory. Cutoff before MRO deployment
           MRO.
         </p>
         <div className="flight-controls">
           <div className="range-group">
             <label htmlFor="tmi-burn">
-              <span>Δv CHUYỂN TIẾP</span>
+              <span>TMI INJECTION Δv</span>
               <output>{t.burn} m/s</output>
             </label>
             <input
@@ -520,7 +402,7 @@ export const ControlPanel: React.FC = () => {
 
           <div className="range-group">
             <label htmlFor="tmi-angle">
-              <span>GÓC TIÊM QUỸ ĐẠO</span>
+              <span>INJECTION PITCH ANGLE</span>
               <output>{t.angle}°</output>
             </label>
             <input
@@ -535,12 +417,12 @@ export const ControlPanel: React.FC = () => {
           </div>
 
           <button className="btn-primary" onClick={() => executeAction('tmi-exec')}>
-            THỰC HIỆN TMI BURN
+            EXECUTE TMI BURN
           </button>
         </div>
 
         <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-          Mục tiêu mô phỏng: <b>3,150 m/s • 0°</b>. Centaur fuel remaining {fmt(t.fuel)} kg.
+          Target parameters: <b>3,150 m/s • 0°</b>. Remaining Centaur propellant: {fmt(t.fuel)} kg.
         </div>
       </div>
     );
@@ -555,12 +437,12 @@ export const ControlPanel: React.FC = () => {
         <div className="task-row" style={{ marginTop: 6 }}>
           {!s.solar && (
             <button className="btn-primary" onClick={() => executeAction('solar')}>
-              MỞ CÁNH PIN SAU KHI TÁCH MRO
+              DEPLOY SOLAR ARRAYS (POST-SEP)
             </button>
           )}
           {!s.antenna && (
             <button className="btn-primary" onClick={() => executeAction('antenna')}>
-              TRIỂN KHAI ĂNG-TEN
+              DEPLOY HIGH-GAIN ANTENNA
             </button>
           )}
           <span className="small-choice active">
@@ -569,7 +451,7 @@ export const ControlPanel: React.FC = () => {
         </div>
         {!s.solar && (
           <div className="alert-card bad" style={{ marginTop: 8 }}>
-            <b>POWER ALERT:</b> Cánh pin chưa triển khai. Dự trữ pin đang cạn dần.
+            <b>POWER ALERT:</b> Solar arrays un-deployed. Battery reserves draining.
           </div>
         )}
       </div>
@@ -580,10 +462,10 @@ export const ControlPanel: React.FC = () => {
         <div>
           {earlyOps}
           <div className="alert-card good">
-            ✓ Course correction thành công. Sai số tiếp cận dự đoán {fmt(cr.miss)} km.
+            ✓ Course correction verified: Projected encounter miss distance {fmt(cr.miss)} km.
           </div>
           <button className="btn-primary" onClick={() => executeAction('to-capture')}>
-            CHUYỂN ĐẾN SAO HỎA →
+            APPROACH MARS: ORBIT INSERTION →
           </button>
         </div>
       );
@@ -599,13 +481,13 @@ export const ControlPanel: React.FC = () => {
       <div>
         {earlyOps}
         <p className="control-description">
-          Sửa sai số hành trình trước khi tiếp cận hành tinh. Kết hợp burn <b>along-track</b> và <b>cross-track</b> để
-          khớp đường chuyển tiếp đứt mờ.
+          Trim trajectory errors prior to Mars encounter. Combine <b>along-track</b> and <b>cross-track</b> delta-V burns
+          to intercept target arrival corridor.
         </p>
         <div className="flight-controls">
           <div className="range-group">
             <label htmlFor="along">
-              <span>Δv DỌC QUỸ ĐẠO</span>
+              <span>ALONG-TRACK Δv</span>
               <output>
                 {cr.along} m/s{' '}
                 <span className={Math.abs(alongDev) <= 1 ? 'status-good' : 'status-warn'} style={{ fontSize: 10, marginLeft: 4 }}>
@@ -626,7 +508,7 @@ export const ControlPanel: React.FC = () => {
 
           <div className="range-group">
             <label htmlFor="lateral">
-              <span>Δv NGANG QUỸ ĐẠO</span>
+              <span>CROSS-TRACK Δv</span>
               <output>
                 {cr.lateral} m/s{' '}
                 <span className={Math.abs(lateralDev) <= 1 ? 'status-good' : 'status-warn'} style={{ fontSize: 10, marginLeft: 4 }}>
@@ -646,7 +528,7 @@ export const ControlPanel: React.FC = () => {
           </div>
 
           <button className="btn-primary" onClick={() => executeAction('cruise-exec')}>
-            THỰC HIỆN HIỆU CHỈNH
+            EXECUTE TRAJECTORY CORRECTION
           </button>
         </div>
 
@@ -665,29 +547,28 @@ export const ControlPanel: React.FC = () => {
           }}
         >
           <div>
-            <div style={{ color: '#8aa3b5', fontSize: 9, fontWeight: 700 }}>ĐỘ LỆCH DỌC TRỤC</div>
+            <div style={{ color: '#8aa3b5', fontSize: 9, fontWeight: 700 }}>ALONG-TRACK DEV</div>
             <strong className={Math.abs(alongDev) <= 1 ? 'status-good' : 'status-warn'}>
               {alongDev > 0 ? '+' : ''}{alongDev} m/s ({alongKm.toLocaleString('en-US')} km)
             </strong>
           </div>
           <div>
-            <div style={{ color: '#8aa3b5', fontSize: 9, fontWeight: 700 }}>ĐỘ LỆCH NGANG TRỤC</div>
+            <div style={{ color: '#8aa3b5', fontSize: 9, fontWeight: 700 }}>CROSS-TRACK DEV</div>
             <strong className={Math.abs(lateralDev) <= 1 ? 'status-good' : 'status-warn'}>
               {lateralDev > 0 ? '+' : ''}{lateralDev} m/s ({lateralKm.toLocaleString('en-US')} km)
             </strong>
           </div>
           <div>
-            <div style={{ color: '#8aa3b5', fontSize: 9, fontWeight: 700 }}>SAI SỐ TIẾP CẬN DỰ KIẾN</div>
+            <div style={{ color: '#8aa3b5', fontSize: 9, fontWeight: 700 }}>PROJECTED MISS DISTANCE</div>
             <strong className={totalMiss <= 45000 ? 'status-good' : 'status-bad'}>
               {totalMiss.toLocaleString('en-US')} km{' '}
-              <small style={{ fontSize: 9, opacity: 0.8 }}>(Mục tiêu &lt; 45.000)</small>
+              <small style={{ fontSize: 9, opacity: 0.8 }}>(Target &lt; 45,000 km)</small>
             </strong>
           </div>
         </div>
 
         <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-          Dữ liệu navigator: <b>Δv dọc ≈ {tgt.along} m/s</b>, <b>Δv ngang ≈ {tgt.lateral} m/s</b>. Sai số lớn có thể bay
-          lướt qua Sao Hỏa.
+          Navigator advisory: <b>Along-track Δv ≈ {tgt.along} m/s</b>, <b>Cross-track Δv ≈ {tgt.lateral} m/s</b>. Excessive miss distance risks hyperbolic Mars flyby escape.
         </div>
       </div>
     );
@@ -709,13 +590,12 @@ export const ControlPanel: React.FC = () => {
         <div>
           {powerBus}
           <p className="control-description">
-            MRO tiếp cận Sao Hỏa: thực hiện Mars Orbit Insertion (MOI). Burn sai có thể lao vào hành tinh hoặc không bị
-            bắt vào quỹ đạo.
+            MRO approaching Mars: execute Mars Orbit Insertion (MOI). Off-nominal burn causes planetary impact or hyperbolic escape.
           </p>
           <div className="flight-controls">
             <div className="range-group">
               <label htmlFor="capture-burn">
-                <span>Δv HÃM TỐC</span>
+                <span>DECELERATION Δv</span>
                 <output>{c.burn} m/s</output>
               </label>
               <input
@@ -731,7 +611,7 @@ export const ControlPanel: React.FC = () => {
 
             <div className="range-group">
               <label htmlFor="capture-angle">
-                <span>SAI LỆCH VECTOR</span>
+                <span>GIMBAL VECTOR DEVIATION</span>
                 <output>{c.angle}°</output>
               </label>
               <input
@@ -746,12 +626,12 @@ export const ControlPanel: React.FC = () => {
             </div>
 
             <button className="btn-primary" onClick={() => executeAction('capture-exec')}>
-              THỰC HIỆN MOI
+              EXECUTE MOI BURN
             </button>
           </div>
 
           <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-            Mục tiêu đơn giản hóa: <b>940 m/s</b> • góc 0° • còn {fmt(s.prop)} kg chất đẩy MRO.
+            Nominal targets: <b>940 m/s</b> • 0° pitch • {fmt(s.prop)} kg MRO hydrazine remaining.
           </div>
         </div>
       );
@@ -762,14 +642,13 @@ export const ControlPanel: React.FC = () => {
         <div>
           {powerBus}
           <div className="alert-card">
-            Đã bắt vào quỹ đạo elip: viễn điểm {fmt(c.apo)} km. Cần ít nhất <b>{need} lượt hãm khí quyển</b>
-            {state.slot[3] === 1 ? ' (bình 75% bắt buộc hãm nhiều hơn)' : ''}. Lựa chọn periapsis quá thấp có thể phá
-            hủy cánh pin.
+            Elliptical capture orbit confirmed: apoapsis {fmt(c.apo)} km. Complete at least <b>{need} aerobraking passes</b>
+            {state.slot[3] === 1 ? ' (75% tank mandates additional passes)' : ''}. Periapsis below safe corridor will thermally destroy solar array hinges.
           </div>
           <div className="flight-controls">
             <div className="range-group">
               <label htmlFor="peri">
-                <span>PERIAPSIS HÃM KHÍ QUYỂN</span>
+                <span>AEROBRAKING PERIAPSIS</span>
                 <output>{c.peri} km</output>
               </label>
               <input
@@ -791,12 +670,12 @@ export const ControlPanel: React.FC = () => {
             </div>
 
             <button className="btn-primary" onClick={() => executeAction('aerobrake')}>
-              THỰC HIỆN AEROBRAKING
+              EXECUTE AEROBRAKE PASS
             </button>
           </div>
 
           <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-            Hành lang tham khảo trong game <b>140–165 km</b>; dưới 130 km làm tăng nguy cơ nhiệt.
+            Safe operational corridor: <b>140–165 km</b>; periapsis below 130 km poses severe thermal risk.
           </div>
         </div>
       );
@@ -806,13 +685,12 @@ export const ControlPanel: React.FC = () => {
       <div>
         {powerBus}
         <div className="alert-card good">
-          ✓ Đã hoàn thành {c.passes} lượt hãm khí quyển. Viễn điểm hiện tại ~{fmt(c.apo)} km. Đưa tàu vào quỹ đạo khoa
-          học 300 km.
+          ✓ Completed {c.passes} aerobraking passes. Current apoapsis ~{fmt(c.apo)} km. Circularize spacecraft into 300 km polar science orbit.
         </div>
         <div className="flight-controls triple">
           <div className="range-group">
             <label htmlFor="trim">
-              <span>Δv CIRCULARIZATION</span>
+              <span>CIRCULARIZATION Δv</span>
               <output>{c.trim} m/s</output>
             </label>
             <input
@@ -828,7 +706,7 @@ export const ControlPanel: React.FC = () => {
 
           <div className="range-group">
             <label htmlFor="incl">
-              <span>ĐỘ NGHIÊNG QUỸ ĐẠO</span>
+              <span>ORBITAL INCLINATION</span>
               <output>{c.incl}°</output>
             </label>
             <input
@@ -848,12 +726,12 @@ export const ControlPanel: React.FC = () => {
           </div>
 
           <button className="btn-primary" onClick={() => executeAction('circularize')}>
-            XÁC NHẬN QUỸ ĐẠO →
+            CONFIRM SCIENCE ORBIT →
           </button>
         </div>
 
         <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-          Thắng khi độ cao quanh <b>300 ± 25 km</b>, độ nghiêng <b>93 ± 2°</b>. Vùng zone xanh = hành lang quỹ đạo mục tiêu.
+          Success criteria: Altitude <b>300 ± 25 km</b>, inclination <b>93 ± 2°</b>. Shaded green zone = target science orbit.
         </div>
       </div>
     );
@@ -894,20 +772,20 @@ export const ControlPanel: React.FC = () => {
       <div className="task-row" style={{ margin: '12px 0' }}>
         {!s.solar && (
           <button className="btn-primary" onClick={() => executeAction('solar')}>
-            TRIỂN KHAI CÁNH PIN
+            DEPLOY SOLAR ARRAYS
           </button>
         )}
         {!s.antenna && (
           <button className="btn-primary" onClick={() => executeAction('antenna')}>
-            MỞ ĂNG-TEN CAO ÍCH
+            DEPLOY HIGH-GAIN ANTENNA
           </button>
         )}
         <button className="btn-secondary" onClick={() => executeAction('radar-toggle')}>
-          {s.radarActive ? 'TẮT RADAR • TIẾT KIỆM ĐIỆN' : 'BẬT RADAR'}
+          {s.radarActive ? 'DISABLE RADAR (SAVE POWER)' : 'ENABLE SHARAD RADAR'}
         </button>
         {state.slot[0] === 0 && (
           <button className="btn-secondary" onClick={() => executeAction('crism-toggle')}>
-            {s.crismActive !== false ? 'TẮT CRISM • CHỤP HiRISE' : 'BẬT CRISM'}
+            {s.crismActive !== false ? 'DISABLE CRISM (STOP VIBRATION)' : 'ENABLE CRISM'}
           </button>
         )}
       </div>
@@ -931,17 +809,17 @@ export const ControlPanel: React.FC = () => {
 
     const last = (
       <div className="hint-line" style={{ marginTop: 12 }}>
-        Điện hiện thời: <b>{draw} / {b.gen} W</b>{' '}
+        Bus Power: <b>{draw} / {b.gen} W</b>{' '}
         {powerOK ? (
           <span className="status-good">• nominal</span>
         ) : (
-          <span className="status-bad">• quá tải</span>
+          <span className="status-bad">• BUS OVERLOAD</span>
         )}{' '}
-        • Lưu trữ <b>{usedMemory().toFixed(1)} / {opts[4].memory} GB</b>. Đã gửi{' '}
+        • SSR Storage: <b>{usedMemory().toFixed(1)} / {opts[4].memory} GB</b>. Downlinked{' '}
         <b>
           {s.returned.length} / {targetPhotos}
         </b>{' '}
-        ảnh (Sức chứa bộ nhớ: {maxPhotos} ảnh).
+        images (SSR capacity: {maxPhotos} images).
       </div>
     );
 
@@ -978,28 +856,28 @@ export const ControlPanel: React.FC = () => {
                 onClick={() => executeAction('take-photo')}
               >
                 {isBufferFull
-                  ? `BỘ NHỚ ĐẦY (${s.images.length}/${maxPhotos} ẢNH) • HÃY TRUYỀN DỮ LIỆU`
-                  : `CHỤP ẢNH • ${imageSize.toFixed(1)} GB (${s.images.length}/${maxPhotos} ẢNH)`}
+                  ? `SSR BUFFER FULL (${s.images.length}/${maxPhotos} FRAMES) • DOWNLINK REQUIRED`
+                  : `EXPOSE CAMERA • ${imageSize.toFixed(1)} GB (${s.images.length}/${maxPhotos} FRAMES)`}
               </button>
               <span className="hint-line">
-                Các ảnh được cung cấp sẵn trong bộ tư liệu và dùng làm kết quả mô phỏng.
+                Imagery downlinked from actual NASA MRO science datasets.
               </span>
             </div>
           </div>
         ) : (
           <div>
             <div className="alert-card good">
-              Đã chụp {s.images.length}/{maxPhotos} ảnh (đã truyền {s.returned.length}/{targetPhotos} ảnh). Đĩa {opts[4].name}. Mỗi lệnh gửi tối đa {opts[4].rate} GB dữ liệu.
+              Stored {s.images.length}/{maxPhotos} images (downlinked {s.returned.length}/{targetPhotos} images). {opts[4].name} dish. Telemetry rate: up to {opts[4].rate} GB/pass.
             </div>
             <button
               className="btn-primary"
               disabled={!s.antenna || !s.solar || !s.images.some((x) => !s.returned.some((r) => r.id === x.id))}
               onClick={() => executeAction('transmit')}
             >
-              TRUYỀN DỮ LIỆU VỀ TRÁI ĐẤT ({s.returned.length}/{targetPhotos} HOÀN TẤT)
+              DOWNLINK DATA VIA DSN ({s.returned.length}/{targetPhotos} COMPLETE)
             </button>
             <div className="hint-line">
-              Nếu ảnh chưa truyền hết, tiếp tục phát gói dữ liệu cho tới khi hoàn tất.
+              Continue transmitting image packets across DSN ground station passes until complete.
             </div>
           </div>
         )}
@@ -1011,9 +889,9 @@ export const ControlPanel: React.FC = () => {
   const renderEndControls = () => {
     return (
       <div>
-        <p className="control-description">Đã khóa bảng điều khiển chuyến bay.</p>
+        <p className="control-description">Flight controls locked. Simulation finalized.</p>
         <button className="btn-primary" onClick={() => setActiveModal('end-report')}>
-          XEM BÁO CÁO NHIỆM VỤ
+          VIEW MISSION REPORT
         </button>
       </div>
     );
@@ -1044,7 +922,7 @@ export const ControlPanel: React.FC = () => {
 
         {guidanceUnlocked && state.phase !== 'end' && (
           <div className="hint-unlocked">
-            ◉ GỢI Ý MỞ KHÓA — bạn đã thất bại {attempts} lần ở giai đoạn này. Dữ liệu hoa tiêu tự động đã mở.
+            ◉ GUIDANCE UNLOCKED — flight failed {attempts} times at this stage. Advisory navigation telemetry online.
           </div>
         )}
       </div>
