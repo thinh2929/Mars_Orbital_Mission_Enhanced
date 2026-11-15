@@ -57,7 +57,7 @@ export class PlanetRenderer {
           mat3 rot = mat3(c, 0.0, -s,  0.0, 1.0, 0.0,  s, 0.0, c);
           vec3 p = rot * aPosition;
           vec3 n = normalize(rot * aNormal);
-          vUv = aUv;
+          vUv = vec2(aUv.x, 1.0 - aUv.y);
           vLight = 0.21 + 0.80 * max(dot(n, normalize(vec3(-0.52, 0.58, 0.92))), 0.0);
           gl_Position = vec4(p.x * 0.91, p.y * 0.91, -p.z * 0.72, 1.0);
         }

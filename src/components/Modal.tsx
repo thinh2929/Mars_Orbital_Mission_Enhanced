@@ -13,6 +13,7 @@ export const Modal: React.FC = () => {
     build,
     resetMission,
     retryStage,
+    photoCapacity,
   } = useGame();
 
   if (activeModal === 'none' || activeModal === 'intro') return null;
@@ -108,6 +109,8 @@ export const Modal: React.FC = () => {
     const c = state.capture;
     const s = state.sat;
     const b = build;
+    const cap = photoCapacity();
+    const targetPhotos = cap?.targetPhotos || 3;
     const money = (n: number) => (n / 1000).toFixed(2) + 'B';
 
     return (
@@ -132,7 +135,7 @@ export const Modal: React.FC = () => {
             </div>
             <div className="summary-cell">
               <small>ẢNH ĐÃ NHẬN</small>
-              <strong>{s.returned.length} / 3</strong>
+              <strong>{s.returned.length} / {targetPhotos}</strong>
             </div>
             <div className="summary-cell">
               <small>ĐIỂM NHIỆM VỤ</small>
@@ -179,7 +182,7 @@ export const Modal: React.FC = () => {
                 SCIENCE DOWNLINK / MARS SURFACE
               </div>
               <div className="gallery">
-                {s.returned.slice(0, 4).map((x) => (
+                {s.returned.map((x) => (
                   <figure key={x.id}>
                     <img
                       src={

@@ -853,7 +853,7 @@ export const ControlPanel: React.FC = () => {
         </div>
 
         <div className={`hint-line ${!guidanceUnlocked ? 'guidance-locked' : ''}`}>
-          Thắng khi độ cao quanh <b>300 ± 25 km</b>, độ nghiêng <b>93 ± 2°</b>. Đường đứt mờ = quỹ đạo mục tiêu.
+          Thắng khi độ cao quanh <b>300 ± 25 km</b>, độ nghiêng <b>93 ± 2°</b>. Vùng zone xanh = hành lang quỹ đạo mục tiêu.
         </div>
       </div>
     );

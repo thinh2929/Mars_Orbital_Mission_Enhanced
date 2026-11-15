@@ -31,7 +31,7 @@ export const Mars3DView: React.FC<Mars3DViewProps> = ({ className, style }) => {
     const height = container.clientHeight || 600;
 
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-    camera.position.set(0, 0, 3.4);
+    camera.position.set(0, 0, 3.8);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -83,12 +83,12 @@ export const Mars3DView: React.FC<Mars3DViewProps> = ({ className, style }) => {
       (gltf) => {
         const model = gltf.scene;
 
-        // Compute bounding box and normalize scale to fit radius = 1.0 (diameter = 2.0)
+        // Compute bounding box and normalize scale to fit nicely inside window
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
-        const scale = 2.0 / maxDim;
+        const scale = 1.75 / maxDim;
 
         model.position.sub(center);
         model.scale.setScalar(scale);
@@ -117,7 +117,7 @@ export const Mars3DView: React.FC<Mars3DViewProps> = ({ className, style }) => {
         // Fallback procedural textured Mars sphere
         const textureLoader = new THREE.TextureLoader();
         const marsTex = textureLoader.load('/assets/nasa_planets/mars_texture.jpg');
-        const geo = new THREE.SphereGeometry(1.0, 64, 64);
+        const geo = new THREE.SphereGeometry(0.88, 64, 64);
         const mat = new THREE.MeshStandardMaterial({
           map: marsTex,
           roughness: 0.85,

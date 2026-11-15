@@ -6,7 +6,8 @@ import { ASSETS } from '../lib/constants';
 import { getPlanetRenderer } from '../lib/planetRenderer';
 
 export const SimulationCanvas: React.FC = () => {
-  const { state, build, motionTimes, launchFX } = useGame();
+  const { state, build, motionTimes, launchFX, photoCapacity } = useGame();
+  const cap = photoCapacity();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const spritesRef = useRef<Record<string, HTMLImageElement>>({});
   const starsRef = useRef<Array<{ x: number; y: number; r: number; phase: number }>>([]);
@@ -694,12 +695,24 @@ export const SimulationCanvas: React.FC = () => {
             drawSatellite(pos.x, pos.y, Math.min(H * 0.19, 94), 0.1 + progress * 0.25);
           }
 
-          textAt(isT ? 'CENTAUR → MARS TRANSFER' : 'MIDCOURSE NAVIGATION', W * 0.52, H * 0.2, '#dcecf2', 12, 'center', '700');
-          if (!isT) {
+          if (isT) {
+            textAt('CENTAUR → MARS TRANSFER', W * 0.52, H * 0.2, '#dcecf2', 12, 'center', '700');
+            textAt(
+              active ? `TRANSFER ${Math.round(progress * 100)}%` : 'AWAITING TRAJECTORY CONFIRMATION',
+              W * 0.5,
+              H * 0.85,
+              '#8de2cf',
+              11,
+              'center',
+              '700'
+            );
+          } else {
+            // Stage 6 (MIDCOURSE NAVIGATION): Moved to bottom area so it does not collide with satellite trajectory
+            textAt('MIDCOURSE NAVIGATION • HIỆU CHỈNH ĐƯỜNG BAY', W * 0.5, H * 0.76, '#dcecf2', 12, 'center', '700');
             textAt(
               `Δv DỌC: ${alongDev > 0 ? '+' : ''}${alongDev} m/s • Δv NGANG: ${latDev > 0 ? '+' : ''}${latDev} m/s`,
-              W * 0.52,
-              H * 0.24,
+              W * 0.5,
+              H * 0.80,
               Math.abs(alongDev) <= 1 && Math.abs(latDev) <= 1 ? '#7ce4cc' : '#f0ab75',
               11,
               'center',
@@ -707,23 +720,23 @@ export const SimulationCanvas: React.FC = () => {
             );
             textAt(
               `SAI SỐ TIẾP CẬN DỰ KIẾN: ${missEst.toLocaleString('en-US')} KM (CHUẨN < 45.000 KM)`,
-              W * 0.52,
-              H * 0.28,
+              W * 0.5,
+              H * 0.84,
               missEst <= 45000 ? '#7ce4cc' : '#f07975',
               10,
               'center',
               '600'
             );
+            textAt(
+              active ? `TIẾP CẬN SAO HỎA: ${Math.round(progress * 100)}%` : 'AWAITING TRAJECTORY CONFIRMATION',
+              W * 0.5,
+              H * 0.88,
+              '#8de2cf',
+              11,
+              'center',
+              '700'
+            );
           }
-          textAt(
-            active ? `TRANSFER ${Math.round(progress * 100)}%` : 'AWAITING TRAJECTORY CONFIRMATION',
-            W * 0.5,
-            H * 0.85,
-            '#8de2cf',
-            11,
-            'center',
-            '700'
-          );
           break;
         }
 
@@ -732,9 +745,6 @@ export const SimulationCanvas: React.FC = () => {
           const y = H * 0.54;
           const r = Math.min(W, H) * 0.22;
           planet(x, y, r, 'mars');
-
-          // Reference target 300 km circular polar orbit
-          ellipseStroke(x, y, r * 1.38, r * 1.38, '#7be8d144', 1.8, [6, 8], 0.04);
 
           const c = cur.capture;
           const need = cur.slot[3] === 1 ? 3 : 2;
@@ -748,6 +758,36 @@ export const SimulationCanvas: React.FC = () => {
 
           if (!c.inserted) {
             // Sub-state 1: MOI (Mars Orbit Insertion)
+            // Corridor strictly encompasses ALL valid controls: |burn - 940| <= 85 m/s and |angle| <= 6°
+            // Outer envelope: rx = 2.58r, ry = 1.95r; Inner envelope: rx = 1.70r, ry = 1.28r
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(x, y, r * 2.58, r * 1.95, 0.04, 0, Math.PI * 2);
+            ctx.ellipse(x, y, r * 1.70, r * 1.28, 0.04, Math.PI * 2, 0, true);
+            ctx.fillStyle = 'rgba(74, 222, 128, 0.15)';
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.7)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.ellipse(x, y, r * 2.58, r * 1.95, 0.04, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.ellipse(x, y, r * 1.70, r * 1.28, 0.04, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Nominal centerline (burn = 940 m/s, angle = 0°)
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.35)';
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.ellipse(x, y, r * 2.15, r * 1.60, 0.04, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            textAt('HÀNH LANG BẮT QUỸ ĐẠO AN TOÀN (MOI TARGET CORRIDOR)', x, H * 0.12, '#7ce4cc', 11, 'center', '700');
+            textAt('DẢI Δv HỢP LỆ: 855 – 1025 M/S • GÓC: ±6°', x, H * 0.15, '#a7e8db', 9.5, 'center');
+
             const burnDelta = (c.burn - 940) / 190;
             outerRx = r * (2.15 - burnDelta * 0.65);
             outerRy = r * (1.60 - burnDelta * 0.40);
@@ -755,12 +795,18 @@ export const SimulationCanvas: React.FC = () => {
             cx = x - Math.sin(orbitAngle) * (burnDelta * 18);
             cy = y - Math.cos(orbitAngle) * (c.angle * 2.2);
 
-            const isBurnGood = c.burn >= 880 && c.burn <= 990 && Math.abs(c.angle) <= 4;
-            const isBurnDanger = c.burn < 810 || Math.abs(c.angle) > 8;
-            orbitColor = isBurnGood ? '#7addcc' : isBurnDanger ? '#f07975' : '#f0be75';
+            const isBurnValid = Math.abs(c.burn - 940) <= 85 && Math.abs(c.angle) <= 6;
+            const isBurnOptimal = Math.abs(c.burn - 940) <= 35 && Math.abs(c.angle) <= 2;
+            orbitColor = isBurnOptimal ? '#7addcc' : isBurnValid ? '#82ebb3' : '#f07975';
 
             textAt(
-              `MOI Δv: ${c.burn} m/s • GÓC: ${c.angle > 0 ? '+' : ''}${c.angle}° • DỰ KIẾN VIỄN ĐIỂM: ~${Math.max(300, Math.round(18000 - burnDelta * 12000)).toLocaleString('en-US')} KM`,
+              `MOI Δv: ${c.burn} m/s • GÓC: ${c.angle > 0 ? '+' : ''}${c.angle}° • ${
+                isBurnOptimal
+                  ? '✓ TỐI ƯU TRUNG TÂM HÀNH LANG'
+                  : isBurnValid
+                  ? '✓ TRONG HÀNH LANG AN TOÀN'
+                  : '⚠ NGOÀI HÀNH LANG AN TOÀN (NGUY CƠ MẤT TÀU)'
+              }`,
               x,
               H * 0.88,
               orbitColor,
@@ -769,15 +815,17 @@ export const SimulationCanvas: React.FC = () => {
               '700'
             );
           } else if (c.passes < need) {
-            // Sub-state 2: Aerobraking passes
-            ctx.save();
-            ctx.strokeStyle = 'rgba(239, 143, 76, 0.4)';
-            ctx.lineWidth = 1.2;
-            ctx.setLineDash([4, 6]);
-            ctx.beginPath();
-            ctx.arc(x, y, r * 1.22, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.restore();
+            // Sub-state 2: Aerobraking passes (Zone xanh đã được loại bỏ theo yêu cầu)
+            textAt(
+              `TIẾN TRÌNH HÃM KHÍ QUYỂN (LƯỢT ${c.passes + 1}/${need})`,
+              x,
+              H * 0.12,
+              '#e7c0a4',
+              11,
+              'center',
+              '700'
+            );
+            textAt('MỤC TIÊU: DÙNG LỰC CẢN KHÍ QUYỂN ĐỂ GIẢM ĐỘ CAO VIỄN ĐIỂM', x, H * 0.15, '#c4d9df', 9.5, 'center');
 
             const periNorm = (c.peri - 115) / 75;
             const rPeri = r * (1.08 + periNorm * 0.28);
@@ -787,12 +835,21 @@ export const SimulationCanvas: React.FC = () => {
             cx = x - (rApo - rPeri) * 0.42;
             orbitAngle = 0.05;
 
-            const isSafe = c.peri >= 140 && c.peri <= 165;
-            const isCritical = c.peri < 130;
-            orbitColor = isSafe ? '#7addcc' : isCritical ? '#f07975' : '#f0be75';
+            const isOptimal = c.peri >= 140 && c.peri <= 165;
+            const isSafe = c.peri >= 130 && c.peri <= 170;
+            const isCritical = c.peri < 125;
+            orbitColor = isOptimal ? '#7addcc' : isSafe ? '#82ebb3' : isCritical ? '#f07975' : '#f0be75';
 
             textAt(
-              `PERIAPSIS HÃM: ${c.peri} KM (${isSafe ? 'HÀNH LANG AN TOÀN' : isCritical ? 'QUÁ NHIỆT NGUY HIỂM' : 'HÃM YẾU'}) • VIỄN ĐIỂM: ${c.apo.toLocaleString('en-US')} KM`,
+              `PERIAPSIS HÃM: ${c.peri} KM • ${
+                isOptimal
+                  ? '✓ TỐI ƯU HÃM KHÍ QUYỂN'
+                  : isSafe
+                  ? '✓ HÀNH LANG AN TOÀN'
+                  : isCritical
+                  ? '⚠ QUÁ NHIỆT NGUY HIỂM (<125 KM)'
+                  : '⚠ HÃM YẾU (>170 KM)'
+              } • VIỄN ĐIỂM: ${c.apo.toLocaleString('en-US')} KM`,
               x,
               H * 0.88,
               orbitColor,
@@ -802,6 +859,36 @@ export const SimulationCanvas: React.FC = () => {
             );
           } else if (!c.finalized) {
             // Sub-state 3: Circularization
+            // Target: 300 ± 25 km altitude, 93 ± 2° inclination.
+            // Safe bounds: |trim - optTrim| <= 20 m/s. outerRx in [1.321r, 1.439r].
+            // Zone covers r * 1.30 to r * 1.46.
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.46, 0, Math.PI * 2);
+            ctx.arc(x, y, r * 1.30, 0, Math.PI * 2, true);
+            ctx.fillStyle = 'rgba(74, 222, 128, 0.16)';
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.7)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.46, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.30, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Target nominal 300 km circular orbit line
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.35)';
+            ctx.lineWidth = 1.0;
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.38, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            textAt('VÙNG QUỸ ĐẠO KHOA HỌC MỤC TIÊU (300 ± 25 KM, 93 ± 2°)', x, H * 0.12, '#7ce4cc', 11, 'center', '700');
+            textAt('HÀNH LANG ĐIỀU CHỈNH Δv & ĐỘ NGHIÊNG HỢP LỆ', x, H * 0.15, '#a7e8db', 9.5, 'center');
+
             const optTrim = Math.round((190 + Math.max(0, c.apo - 300) * 0.09) / 5) * 5;
             const trimDiff = (c.trim - optTrim) / 50;
             const targetR = r * 1.38;
@@ -813,11 +900,20 @@ export const SimulationCanvas: React.FC = () => {
             const squash = Math.max(0.65, Math.cos(inclAngle * 0.45));
             outerRy *= squash;
 
-            const isIdeal = Math.abs(c.trim - optTrim) <= 15 && Math.abs(c.incl - 93) <= 2;
-            orbitColor = isIdeal ? '#7addcc' : '#f0be75';
+            const isTrimValid = Math.abs(c.trim - optTrim) <= 20;
+            const isInclValid = Math.abs(c.incl - 93) <= 2;
+            const isTargetGood = isTrimValid && isInclValid;
+            const isTargetPerfect = Math.abs(c.trim - optTrim) <= 10 && Math.abs(c.incl - 93) <= 1;
+            orbitColor = isTargetPerfect ? '#7addcc' : isTargetGood ? '#82ebb3' : '#f07975';
 
             textAt(
-              `TRIM Δv: ${c.trim} m/s (Chuẩn: ~${optTrim}) • ĐỘ NGHIÊNG: ${c.incl}° (Chuẩn: 93°)`,
+              `TRIM Δv: ${c.trim} m/s (Chuẩn: ~${optTrim}) • ĐỘ NGHIÊNG: ${c.incl}° (Chuẩn: 93°) • ${
+                isTargetPerfect
+                  ? '✓ QUỸ ĐẠO HOÀN HẢO'
+                  : isTargetGood
+                  ? '✓ TRONG HÀNH LANG MỤC TIÊU'
+                  : '⚠ LỆCH VÙNG QUỸ ĐẠO MỤC TIÊU'
+              }`,
               x,
               H * 0.88,
               orbitColor,
@@ -827,12 +923,32 @@ export const SimulationCanvas: React.FC = () => {
             );
           } else {
             // Sub-state 4: Finalized orbit
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.46, 0, Math.PI * 2);
+            ctx.arc(x, y, r * 1.30, 0, Math.PI * 2, true);
+            ctx.fillStyle = 'rgba(74, 222, 128, 0.16)';
+            ctx.fill();
+
+            ctx.strokeStyle = 'rgba(74, 222, 128, 0.7)';
+            ctx.lineWidth = 1.6;
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.46, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(x, y, r * 1.30, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.restore();
+
+            textAt('MARS • QUỸ ĐẠO KHOA HỌC ĐÃ XÁC LẬP', x, H * 0.12, '#7ce4cc', 11, 'center', '700');
+            textAt('300 KM POLAR SCIENCE ORBIT', x, H * 0.15, '#a7e8db', 9.5, 'center');
+
             outerRx = r * 1.38 + (c.finalAlt - 300) * 0.003;
             outerRy = r * 1.38 + (c.finalAlt - 300) * 0.003;
             orbitAngle = ((c.incl - 93) * Math.PI) / 180;
             orbitColor = '#7addcc';
             textAt(
-              `QUỸ ĐẠO KHOA HỌC: ${Math.round(c.finalAlt)} KM • ${c.incl.toFixed(1)}° POLAR`,
+              `QUỸ ĐẠO KHOA HỌC: ${Math.round(c.finalAlt)} KM • ${c.incl.toFixed(1)}° POLAR • TRẠNG THÁI TỐT`,
               x,
               H * 0.88,
               '#7addcc',
@@ -847,8 +963,6 @@ export const SimulationCanvas: React.FC = () => {
           const px = cx + outerRx * Math.cos(a) * Math.cos(orbitAngle) - outerRy * Math.sin(a) * Math.sin(orbitAngle);
           const py = cy + outerRx * Math.cos(a) * Math.sin(orbitAngle) + outerRy * Math.sin(a) * Math.cos(orbitAngle);
           drawSatellite(px, py, 77, -a * 0.1);
-          textAt('MARS • TARGET SCIENCE ORBIT', x, H * 0.13, '#e7c0a4', 12, 'center', '700');
-          textAt('300 KM • 93° POLAR', x, H * 0.17, '#c4d9df', 10, 'center');
           break;
         }
 
@@ -1037,11 +1151,11 @@ export const SimulationCanvas: React.FC = () => {
     capture: (
       <>
         <div className="overlay-head">MARS ORBIT TARGET</div>
-        Đường mờ: quỹ đạo mục tiêu 300 km
+        Vùng zone xanh: hành lang điều khiển đúng
         <br />
-        Độ nghiêng mục tiêu: <b>93°</b>
+        Độ cao mục tiêu: <b>300 ± 25 km</b>
         <br />
-        Phải hãm tốc và kiểm tra quỹ đạo
+        Độ nghiêng mục tiêu: <b>93 ± 2°</b>
       </>
     ),
     science: (
@@ -1049,7 +1163,7 @@ export const SimulationCanvas: React.FC = () => {
         <div className="overlay-head">SCIENCE OPERATIONS</div>
         Đã mở cánh pin và ăng-ten từ pha cruise.
         <br />
-        Quản lý pin, chụp ≥ 3 ảnh và truyền về Trái Đất.
+        Quản lý pin, chụp ≥ {cap?.targetPhotos || 3} ảnh và truyền về Trái Đất.
       </>
     ),
     end: (
