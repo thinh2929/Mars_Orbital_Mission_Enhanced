@@ -1,0 +1,80 @@
+# ==========================================
+# Dependencies
+# ==========================================
+node_modules/
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ==========================================
+# Next.js Build & Outputs
+# ==========================================
+.next/
+out/
+build/
+dist/
+
+# ==========================================
+# TypeScript & Cache
+# ==========================================
+*.tsbuildinfo
+next-env.d.ts
+.eslintcache
+
+# ==========================================
+# Environment Variables & Secrets (Bảo mật)
+# ==========================================
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+
+# ==========================================
+# Logs & Debug
+# ==========================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ==========================================
+# Testing & Coverage
+# ==========================================
+coverage/
+.nyc_output/
+
+# ==========================================
+# IDE & Code Editors
+# ==========================================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ==========================================
+# OS Junk Files
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ==========================================
+# Vercel Deployment
+# ==========================================
+.vercel

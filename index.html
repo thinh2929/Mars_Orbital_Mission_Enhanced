@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#07111f" />
+  <title>MARS ORBITAL MISSION — Mission Control</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="app">
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">✳</span><div><strong>ARES<span class="brand-accent">/</span>MISSION</strong><small>DEEP SPACE OPERATIONS • GAME SIMULATION</small></div></div>
+    <div class="top-center"><span class="live-dot"></span><span id="topPhase">MISSION BRIEFING</span><span class="top-separator">/</span><span id="topStep">SYSTEM IDLE</span></div>
+    <div class="top-actions"><span class="tag-muted" id="topClock">SOL 000 • UTC</span><button class="icon-btn" id="audioBtn" title="Bật/tắt âm thanh">♪</button><button class="icon-btn" id="fullscreenBtn" title="Toàn màn hình">⛶</button><button class="icon-btn" id="helpBtn" title="Hướng dẫn">?</button><button class="outline-btn" id="restartBtn" title="Chơi lại từ đầu">↺ RESTART</button></div>
+  </header>
+  <div class="workspace">
+    <aside class="sidebar left-panel">
+      <div class="sidebar-inner">
+        <div class="eyebrow">FLIGHT DIRECTOR CONSOLE</div>
+        <h2 class="sidebar-head">Tổng quan nhiệm vụ<span class="micro-status">● UPLINK ACTIVE</span></h2>
+        <div class="section-rule"></div>
+        <div class="mission-label">CHIẾN DỊCH</div><strong class="mission-name">MARS ORBITAL<br>RECONNAISSANCE</strong>
+        <div class="small-meta">MISSION ID <b>MOR–28–01</b><br>LAUNCH DATE <b>08 NOV 2028</b></div>
+        <div class="section-rule"></div>
+        <div class="mission-label">MISSION PROGRESSION</div>
+        <div id="timeline" class="timeline"></div>
+        <div class="section-rule"></div>
+        <div class="mission-label">FLIGHT EVENTS <span class="live-small">LIVE</span></div>
+        <div id="eventLog" class="event-log"></div>
+        <div class="side-bottom"><span class="status-light"></span><span id="systemStatus">ALL SYSTEMS STANDBY</span></div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <div class="scene-shell">
+        <div class="scene-bar"><div><span class="scene-kicker">● VISUAL TELEMETRY</span><strong id="sceneHeading">MISSION OVERVIEW</strong></div><div id="sceneSub" class="scene-sub">SATELLITE DESIGN • FLIGHT DYNAMICS • MARS ORBIT</div></div>
+        <div class="canvas-wrap"><canvas id="simCanvas" aria-label="Mô phỏng trực quan chuyến bay từ Trái Đất tới Sao Hỏa"></canvas><div id="sceneOverlay" class="scene-overlay"></div><div id="sceneBottom" class="scene-bottom"></div></div>
+      </div>
+      <div class="control-shell">
+        <div class="control-title"><div><span class="eyebrow">MISSION CONTROL</span><h2 id="controlHeading">Lệnh điều khiển</h2></div><div id="stageHint" class="stage-hint">STANDBY</div></div>
+        <div id="controlPanel" class="control-body"></div>
+      </div>
+    </main>
+
+    <aside class="sidebar right-panel">
+      <div class="sidebar-inner">
+        <div class="eyebrow">REAL-TIME TELEMETRY</div>
+        <h2 class="sidebar-head">Thông số hệ thống</h2>
+        <div class="section-rule"></div>
+        <div id="telemetry" class="telemetry"></div>
+        <div class="section-rule"></div>
+        <div class="mission-label">FLIGHT SAFETY</div>
+        <div id="safetyPanel" class="safety-panel"></div>
+        <div class="section-rule"></div>
+        <div class="mission-label">MISSION OBJECTIVES</div>
+        <div id="objectives" class="objectives"></div>
+        <div class="right-footnote">Mô phỏng giáo dục 2D. Các công thức và ngưỡng gameplay được đơn giản hóa; không dùng cho thiết kế chuyến bay thực.</div>
+      </div>
+    </aside>
+  </div>
+  <footer class="statusbar"><span><i class="live-dot"></i> MISSION OPERATIONS CENTER</span><span id="footerMessage">AWAITING FLIGHT DIRECTOR AUTHORIZATION</span><span>SIMULATION BUILD 2.0 • NASA GLB / OFFLINE READY</span></footer>
+</div>
+<div id="introOverlay" class="intro-overlay">
+  <div class="intro-shade"></div>
+  <div class="intro-content">
+    <div class="intro-top"><span class="intro-icon">✳</span> UNITED STATES • SPACE EXPLORATION INITIATIVE <span class="redacted">/ CLASSIFIED BRIEFING</span></div>
+    <div class="intro-serial">DIRECTIVE 001 / 15.09.2028</div>
+    <div class="intro-hairline"></div>
+    <div class="intro-super">THE NEXT FRONTIER</div>
+    <h1>MARS<br><em>ORBITAL</em><br>MISSION<span class="title-dot">.</span></h1>
+    <p>Chính phủ phê duyệt khoản đầu tư giả tưởng <strong>100 tỷ USD</strong> cho chương trình khám phá Sao Hỏa. Bạn được bổ nhiệm làm kỹ sư trưởng nhiệm vụ: thiết kế vệ tinh, lựa chọn phương tiện phóng, điều khiển hành trình và đưa tàu vào quỹ đạo mục tiêu.</p>
+    <div class="intro-stats"><div><small>ĐIỂM ĐẾN</small><b>MARS ORBIT</b></div><div><small>VỆ TINH THAM CHIẾU</small><b>NASA MRO</b></div><div><small>PHÓNG</small><b>08 NOV 2028</b></div></div>
+    <div class="intro-buttons"><button id="startBtn" class="btn-primary btn-start">BẮT ĐẦU NHIỆM VỤ <span>↗</span></button><button id="continueBtn" class="btn-secondary" hidden>TIẾP TỤC NHIỆM VỤ →</button></div>
+    <div class="intro-disclaimer">KỊCH BẢN CHÍNH PHỦ VÀ NGÀY PHÓNG LÀ HƯ CẤU • PHYSICS-INSPIRED EDUCATIONAL GAME</div>
+  </div>
+  <div class="intro-right-caption">MOR–28–01<br>DEEP SPACE SIMULATION<br>EARTH → MARS</div>
+</div>
+<div id="toastContainer" class="toast-container"></div>
+<div id="modal" class="modal hidden" role="dialog" aria-modal="true"></div>
+<script src="planet_mesh.js" defer></script>
+<script src="planet_renderer.js" defer></script>
+<script src="physics.js" defer></script>
+<script src="game.js" defer></script>
+<script src="enhancements.js" defer></script>
+<script src="gameplay_v3.js" defer></script>
+</body>
+</html>
