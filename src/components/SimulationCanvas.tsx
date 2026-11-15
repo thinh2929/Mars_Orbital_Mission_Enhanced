@@ -324,39 +324,6 @@ export const SimulationCanvas: React.FC = () => {
       ctx.restore();
     };
 
-    const drawFairing = (x: number, y: number, size = 56, angle = 0) => {
-      ctx.save();
-      ctx.translate(x, y);
-      ctx.rotate(angle);
-      const w = size * 0.44;
-      const h = size * 0.95;
-      const sp1 = spritesRef.current.fair1;
-      const sp2 = spritesRef.current.fair2;
-      if (sp1?.complete && sp2?.complete && sp1.naturalWidth && sp2.naturalWidth) {
-        ctx.drawImage(sp1, -w * 0.5, -h * 0.5, w * 0.5, h);
-        ctx.drawImage(sp2, 0, -h * 0.5, w * 0.5, h);
-      } else {
-        ctx.fillStyle = '#d4e1e8';
-        ctx.strokeStyle = '#385062';
-        ctx.lineWidth = 1.4;
-        ctx.beginPath();
-        ctx.moveTo(0, -h * 0.5);
-        ctx.quadraticCurveTo(w * 0.5, -h * 0.15, w * 0.5, h * 0.5);
-        ctx.lineTo(-w * 0.5, h * 0.5);
-        ctx.quadraticCurveTo(-w * 0.5, -h * 0.15, 0, -h * 0.5);
-        ctx.closePath();
-        ctx.fill();
-        ctx.stroke();
-        ctx.strokeStyle = '#1d2c38';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(0, -h * 0.5);
-        ctx.lineTo(0, h * 0.5);
-        ctx.stroke();
-      }
-      ctx.restore();
-    };
-
     const ageOf = (key: string) => {
       const t = launchFX.current[key];
       return t ? Math.max(0, (performance.now() - t) / 1000) : 5;
@@ -627,10 +594,24 @@ export const SimulationCanvas: React.FC = () => {
           );
 
           const a = time * 0.35;
-          const px = x + Math.cos(a) * (r * 1.48 + drift);
-          const py = y + Math.sin(a) * (r * 1.11 + drift * 0.5);
-          drawFairing(px, py, 58, a + Math.PI / 2);
-          textAt('PAYLOAD FAIRING', px, py - 35, '#99cad6', 9, 'center', '700');
+          const rot = -0.24;
+          const rxOrb = r * 1.48 + drift;
+          const ryOrb = r * 1.11 + drift * 0.5;
+          const cxOrb = x + drift * 0.4;
+          const cyOrb = y + drift * 0.2;
+
+          const ux = Math.cos(a) * rxOrb;
+          const uy = Math.sin(a) * ryOrb;
+          const px = cxOrb + ux * Math.cos(rot) - uy * Math.sin(rot);
+          const py = cyOrb + ux * Math.sin(rot) + uy * Math.cos(rot);
+
+          const vx = -rxOrb * Math.sin(a) * Math.cos(rot) - ryOrb * Math.cos(a) * Math.sin(rot);
+          const vy = -rxOrb * Math.sin(a) * Math.sin(rot) + ryOrb * Math.cos(a) * Math.cos(rot);
+          const rocketAngle = Math.atan2(vy, vx) + Math.PI / 2;
+
+          const rocketSize = Math.min(H * 0.18, 62);
+          drawCentaur(px, py, rocketSize, rocketAngle);
+          textAt('CENTAUR UPPER STAGE', px, py - 26, '#99cad6', 9, 'center', '700');
           textAt('TARGET 148 × 185 KM', W * 0.26, H * 0.19, '#cadfdf', 12, 'left', '700');
           textAt('ACTUAL ORBIT', W * 0.72, H * 0.84, '#7cdecf', 10, 'left', '700');
           break;
