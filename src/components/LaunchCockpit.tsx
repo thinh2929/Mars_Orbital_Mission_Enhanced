@@ -189,7 +189,7 @@ export const LaunchCockpit: React.FC<LaunchCockpitProps> = ({
 
   return (
     <div className="cockpit-console">
-      {/* 1. TOP AVIONICS DIGITAL DASHBOARD (BẢNG ĐIỆN TỬ BUỒNG LÁI) */}
+      {/* 1. TOP AVIONICS DIGITAL DASHBOARD */}
       <div className="avionics-dashboard">
         <div className="avionics-header">
           <div className="avionics-title">
@@ -284,9 +284,9 @@ export const LaunchCockpit: React.FC<LaunchCockpitProps> = ({
         </div>
       </div>
 
-      {/* 2. MECHANICAL FLIGHT LEVER QUADRANT (BỘ CẦN SỐ ĐIỀU KHIỂN BAY) */}
+      {/* 2. MECHANICAL FLIGHT LEVER QUADRANT */}
       <div className="levers-quadrant">
-        {/* LEVER BAY 1: CẦN ĐẨY GA LỰC ĐẨY ĐỘNG CƠ (THROTTLE LEVER) */}
+        {/* LEVER BAY 1: MAIN ENGINE THROTTLE LEVER */}
         <div className="lever-bay throttle-bay">
           <div className="lever-bay-header">
             <span className="lever-tag">THROTTLE / ENGINE THRUST</span>
@@ -386,7 +386,7 @@ export const LaunchCockpit: React.FC<LaunchCockpitProps> = ({
           </div>
         </div>
 
-        {/* LEVER BAY 2: CẦN TVC GIMBAL PITCH (PITCH GIMBAL LEVER) */}
+        {/* LEVER BAY 2: TVC PITCH GIMBAL LEVER */}
         <div className="lever-bay guidance-bay">
           <div className="lever-bay-header">
             <span className="lever-tag">TVC GIMBAL PITCH</span>
@@ -481,7 +481,7 @@ export const LaunchCockpit: React.FC<LaunchCockpitProps> = ({
           </div>
         </div>
 
-        {/* LEVER BAY 3: CẦN XOAY TRỤC ROLL (ROLL ATTITUDE TRIM) */}
+        {/* LEVER BAY 3: ROLL ATTITUDE TRIM LEVER */}
         <div className="lever-bay roll-bay">
           <div className="lever-bay-header">
             <span className="lever-tag">ROLL ATTITUDE TRIM</span>

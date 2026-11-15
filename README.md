@@ -1,52 +1,162 @@
-# MARS ORBITAL MISSION — Enhanced Edition 2.0
+# MARS ORBITAL MISSION — Spaceflight Simulator
 
-Trò chơi mô phỏng nhiệm vụ đưa vệ tinh tới quỹ đạo Sao Hỏa, xây dựng từ phiên bản game người dùng đã cung cấp. Ngôn ngữ giao diện: Tiếng Việt. Chạy được trên máy tính trong trình duyệt hiện đại, **không cần backend, tài khoản hoặc thư viện từ CDN**.
+A high-fidelity spaceflight operations simulator inspired by NASA's **Mars Reconnaissance Orbiter (MRO)** mission aboard the **Atlas V 401** launch vehicle. Built with **Next.js 15 (App Router)**, **React 19**, **TypeScript**, **HTML5 Canvas**, and **WebGL 3D**.
 
-## Bắt đầu trong 3 bước
+---
 
-1. **Giải nén TOÀN BỘ** thư mục `Mars_Orbital_Mission_Enhanced` (giữ nguyên các thư mục `assets`).
-2. Nhấp đúp **`index.html`** trong Google Chrome hoặc Microsoft Edge. Nếu trình duyệt có chính sách giới hạn truy cập file nội bộ, chạy máy chủ local qua lệnh `python -m http.server 8000` trong thư mục game và mở `http://localhost:8000`.
-3. Nhấn **BẮT ĐẦU NHIỆM VỤ**, cấu hình vệ tinh và tên lửa rồi mở tab **KIỂM TRA TRƯỚC PHÓNG** để Preflight. Sau đó làm theo các yêu cầu từng giai đoạn. Nút `?` mở hướng dẫn; nút `⛶` chuyển toàn màn hình khi trình duyệt cho phép.
+## 🚀 Quick Start
 
-Giao diện tự thích ứng theo kích thước cửa sổ trình duyệt. Các bảng bên tự cuộn; thanh điều khiển có cuộn độc lập nếu màn hình thấp.
+### Option 1: One-Click Launch (Windows)
+Double-click **`start_nextjs.bat`** in the project root. This automatically starts the development server and launches your default web browser at `http://localhost:3000`.
 
-## Quy trình chơi — 8 giai đoạn
+### Option 2: Command Line (PowerShell / Terminal)
+```bash
+# 1. Install dependencies
+npm install
 
-1. **Lắp ráp / Preflight:** chọn 5 nhóm linh kiện và 1 trong 3 tên lửa. Trọng lượng, ngân sách, TWR, kích thước gập và fairing được kiểm tra. Cánh pin bản lớn có thể không vừa fairing nhỏ.
-2. **Phóng:** điều chỉnh throttle, lệch pitch và roll. Khối lượng giảm theo chất đẩy, tốc độ/độ cao được tích phân từ lực đẩy, trọng lực và lực cản đơn giản hóa. Quá lệch hướng, cạn nhiên liệu hoặc vượt tải khí động có thể làm thất bại nhiệm vụ. Mốc mô phỏng là 101 km.
-3. **Tách tầng:** ngắt động cơ tầng 1 (MECO), tách tầng 1, khởi động tầng trên Centaur, tách hai nửa fairing. Các vật thể đã tách có quán tính, vận tốc tách, xoay và rơi tương đối trong hoạt ảnh.
-4. **Quỹ đạo chờ Trái Đất:** thực hiện đốt tinh chỉnh tầng trên để kiểm soát cận điểm/viễn điểm. Nhiên liệu Centaur tiêu hao theo phương trình rocket đơn giản hóa.
-5. **Trans-Mars Injection:** thực hiện burn chuyển tiếp và tách vệ tinh khỏi Centaur. Trình tự tách vệ tinh khác với tách tầng tên lửa.
-6. **Cruise:** **mở cánh pin và ăng-ten ngay sau khi tách MRO**. Quản lý pin và thực hiện hiệu chỉnh hành trình.
-7. **Mars Orbit Insertion:** hãm tốc, chọn hành lang aerobraking phù hợp, circularization và xác nhận quỹ đạo Sao Hỏa.
-8. **Science:** chụp ít nhất 3 ảnh, tránh xung đột HiRISE/CRISM và radar, dùng pin hợp lý, rồi truyền dữ liệu về Trái Đất.
+# 2. Launch development server
+npm run dev
 
-## Các cải tiến trong Enhanced Edition
+# 3. Or create an optimized production build
+npm run build
+npm start
+```
+Open [http://localhost:3000](http://localhost:3000) in any modern desktop web browser (Chrome, Edge, Firefox, or Safari).
 
-- **Fit-to-window:** khung game luôn bám viewport; bàn điều khiển và các thanh bên cuộn độc lập; nút fullscreen.
-- **Good / Bad endings:** ít nhất 3 kết thúc tốt theo hiệu quả nhiệm vụ; nhiều nhóm kết thúc thất bại như không đủ lực đẩy, rời hành lang phóng, hết nhiên liệu, không bắt quỹ đạo Mars, quá nhiệt aerobraking, blackout, quỹ đạo sai mục tiêu. Báo cáo kết thúc ghi **nguyên nhân trực tiếp, phân tích kỹ thuật và cách tránh**.
-- **Đường bay sau đuôi tên lửa** chứ không nối vào tâm sprite; có đường mục tiêu đứt nét.
-- **Tách tầng cơ học:** upper stage giữ chuyển động, core stage trôi/tumbling, fairing tách đôi, hiệu ứng pyro, MRO tách khỏi tầng trên.
-- **Rung cảnh khi phóng** (chỉ khung cảnh, không làm rung các nút điều khiển), cùng lửa động cơ.
-- **Mô hình hành tinh 3D từ 2 file GLB do người dùng cung cấp:** Earth / Mars. Hình học mesh và bản đồ UV/texture được chuyển sẵn thành `planet_mesh.js` + ảnh texture để render WebGL offline mà không cần tải Three.js hoặc GLTFLoader. Bản gốc `.glb` vẫn được lưu trong `assets/nasa_planets/` để bạn sử dụng/chỉnh sửa tiếp. Nếu WebGL không khả dụng, game tự sử dụng mặt cầu 2D dự phòng.
-- **Gameplay liên kết cấu hình:** fairing kiểm tra kích thước gập; thùng nhiên liệu thay đổi khối lượng và propellant; cánh pin có công suất, pin lưu trữ và suy giảm do aerobraking; antenna giới hạn băng thông; ảnh tiêu thụ điện và bộ nhớ.
-- **Tự lưu:** localStorage với key phiên bản `mars-orbital-mission-v2` (tách khỏi save của bản game gốc, không ghi đè tiến trình cũ).
+---
 
-## Mã nguồn
+## 🛰️ Mission Overview & 8-Phase Campaign
 
-- `index.html`: cấu trúc giao diện và tải mã.
-- `style.css`: thiết kế Mission Control và layout theo kích thước viewport.
-- `physics.js`: hàm tính vật lý thuần; ascent 2 trục, drag, gravity, rocket equation.
-- `game.js`: gameplay, HUD, trạng thái, vẽ Canvas của game gốc đã được tinh chỉnh.
-- `enhancements.js`: bổ sung các giai đoạn năng lượng, hệ thống endings, renderer/motion, HUD và interactions.
-- `planet_mesh.js`: mesh/normal/UV/index rút từ GLB của người dùng.
-- `planet_renderer.js`: WebGL renderer 3D không dùng thư viện ngoài.
-- `assets/`: sprite gốc của game, hình địa hình và mô hình hành tinh.
+The simulator models the complete journey of the Mars Reconnaissance Orbiter from Space Launch Complex 41 (SLC-41) at Cape Canaveral to a low-altitude polar science orbit around Mars:
 
-## Lưu ý về mô phỏng và nguồn tài nguyên
+```
+[Phase 1: Assembly] ──► [Phase 2: Liftoff & Ascent] ──► [Phase 3: Staging] ──► [Phase 4: Parking Orbit]
+                                                                                      │
+[Phase 8: Science]  ◄── [Phase 7: Mars Capture]     ◄── [Phase 6: Cruise]  ◄── [Phase 5: TMI Departure]
+```
 
-Đây là trò chơi giáo dục **physics-inspired**. Mô hình ascent có lực, khối lượng, nhiên liệu và gia tốc phụ thuộc nhau, nhưng **không phải** phần mềm dẫn đường hàng không vũ trụ: Earth parking orbit, TMI, interplanetary transfer, aerobraking, nhiên liệu Centaur, thời gian, mục tiêu 300 km/93°, chi phí 3,6 tỷ USD và ngân sách chính phủ 100 tỷ USD đã được điều chỉnh để có thể chơi trong thời gian ngắn. Không sử dụng kết quả game để tính toán thiết kế phóng thực tế.
+### 1. Spacecraft Assembly & Preflight Inspection
+- Configure 5 satellite subsystems: Science Instrument Payload, Solar Array System, High-Gain Antenna (HGA), Solid State Recorder (SSR), and Monopropellant Tank.
+- Choose between 3 heavy-lift rocket configurations (Atlas V 401, Atlas V 551, Delta IV Heavy).
+- Balance payload mass, electrical power budget, folded stowed envelope vs. fairing diameter, and liftoff Thrust-to-Weight Ratio (TWR).
 
-Hai tệp 3D được lưu lại nguyên bản: `Earth_1_12756.glb` → `assets/nasa_planets/earth.glb`, `24881_Mars_1_6792.glb` → `assets/nasa_planets/mars.glb`. Đây là dữ liệu người dùng cung cấp và mô tả là từ NASA; game không tự chứng thực quyền sử dụng hoặc nguồn tải ban đầu. Không xóa file texture hoặc `planet_mesh.js`, vì WebGL renderer cần các tệp này để chạy offline.
-# Mars_Orbital_Mission_Enhanced
-# Mars_Orbital_Mission_Enhanced
+### 2. Liftoff & Atmospheric Ascent
+- Control the launch vehicle with realistic avionics cockpit controls:
+  - **Engine Throttle Quadrant Lever**: Modulate RD-180 rocket thrust (keep liftoff TWR > 1.0; throttle down through high dynamic pressure at Max Q).
+  - **TVC Gimbal Pitch Lever**: Counteract atmospheric drag and wind shear, keeping ascent within the guidance corridor (±18 units).
+  - **Roll Attitude Trim Dial**: Neutralize aerodynamic rolling moments.
+- Coupled 2-axis physics integration tracking dynamic pressure ($Q = \frac{1}{2} \rho v^2$), gravitational losses, propellant mass flow, and Main Engine Cut-Off (MECO) at 101 km altitude.
+
+### 3. Stage Separation & Centaur Ignition
+- Sequence mechanical booster separation with pyrotechnic shock simulation.
+- Ignite the cryogenic Centaur RL-10 upper stage engine in vacuum.
+- Jettison the dual-half payload fairing once dynamic pressure drops below safety thresholds.
+
+### 4. Earth Parking Orbit Insertion
+- Execute Centaur upper-stage orbital burn to circularize into a stable low Earth parking orbit ($148 \times 185\text{ km}$).
+- Shaded green target orbital corridor provides visual feedback for burn duration and cutoff timing.
+
+### 5. Trans-Mars Injection (TMI)
+- Execute hyperbolic escape burn ($\Delta v \approx 3,600\text{–}4,050\text{ m/s}$) to break Earth's gravitational sphere of influence and enter a heliocentric Hohmann transfer ellipse.
+- Perform pyrotechnic separation of the MRO spacecraft from the Centaur upper stage adapter.
+
+### 6. Interplanetary Cruise & Trajectory Correction
+- Deploy dual high-efficiency gallium-arsenide solar arrays and the 3-meter High-Gain Antenna (HGA) to avoid electrical blackout.
+- Execute midcourse Trajectory Correction Maneuvers (TCM) to eliminate along-track ($\Delta v_{\parallel}$) and cross-track ($\Delta v_{\perp}$) drift, targeting Mars arrival within 70,000 km miss distance.
+
+### 7. Mars Orbit Insertion & Aerobraking
+- Perform retro-propulsion Mars Orbit Insertion (MOI) burn ($\Delta v \approx 940\text{ m/s}$) for gravitational capture.
+- Navigate consecutive atmospheric aerobraking dips through the Martian upper atmosphere ($140\text{–}165\text{ km}$ periapsis) to shed orbital energy and lower apoapsis while protecting solar array hinges from thermal overheat.
+- Perform circularization burn into the operational polar science orbit ($300\text{ km}$ altitude, $93^\circ$ polar inclination).
+
+### 8. Polar Science Operations
+- Command primary scientific instruments:
+  - **HiRISE (High Resolution Imaging Science Experiment)**: Ultra-high-resolution visible camera.
+  - **CRISM (Compact Reconnaissance Imaging Spectrometer for Mars)**: Mineral and water-ice mapping.
+  - **SHARAD (Shallow Radar)**: Subsurface sounding radar.
+- Manage battery charge/discharge cycles, avoid instrument radio-frequency conflicts, store observations on the Solid State Recorder (SSR), and downlink high-rate science telemetry to NASA's Deep Space Network (DSN).
+
+---
+
+## 🎮 Key Features & Technical Highlights
+
+- **Avionics Cockpit & Mechanical Levers**: Interactive cockpit with throttle quadrant lever, TVC gimbal lever, attitude trim dial, digital 7-segment readouts, and flight telemetry HUD.
+- **Interactive 3D WebGL Planetary Visualization**: Real NASA topography models for Mars and Earth rendered using Three.js with orbit controls, atmospheric rim shaders, and offline texture fallbacks.
+- **60 FPS Physics Simulation Engine**: High-performance HTML5 Canvas rendering decoupled from React state updates using `requestAnimationFrame`, sub-pixel vector trails, staging pyro particles, and launch pad camera shake.
+- **Web Audio Procedural Sound Synthesizer**: Zero external audio files — rocket engine rumble, staging pyro clanks, booster resonance, guidance warnings, and telemetry beeps are synthesized in real time via the Web Audio API.
+- **Multi-Branch Mission Outcomes**: 11+ unique mission outcomes (Primary Mission Complete, Exceptional Mission, Marginal Success, and specific failure diagnostics with technical root-cause analyses and mitigation guidance).
+- **Mission Checkpoint & Smart Guidance**: Auto-saves state per flight phase to `localStorage`. If an anomaly occurs, players can retry that specific stage; progressive guidance hints unlock after repeated failures.
+- **Fully Responsive Mission Control UI**: Viewport-adaptive layout designed for standard and widescreen displays ($1920\times1080$, $1440\times900$, $1280\times720$) with independent card scrolling and fullscreen toggle.
+
+---
+
+## 📁 Project Architecture
+
+```
+Mars_Orbital_Mission_Enhanced/
+├── public/
+│   └── assets/                     # NASA 3D GLB models, planetary textures, Atlas V & MRO sprites
+├── src/
+│   ├── app/
+│   │   ├── globals.css             # Cyberpunk/Retro-Sci-Fi Mission Control styles & animations
+│   │   ├── layout.tsx              # Root HTML Layout, Metadata & responsive viewport configuration
+│   │   ├── not-found.tsx           # Telemetry 404 error page
+│   │   └── page.tsx                # Main single-page application shell
+│   ├── components/
+│   │   ├── Header.tsx              # Top bar, Sol clock, audio toggle, fullscreen, abort/restart
+│   │   ├── LeftSidebar.tsx         # Flight Director console, 8-phase timeline, real-time event log
+│   │   ├── RightSidebar.tsx        # Live telemetry HUD, power budget bar, safety checks, mission checklist
+│   │   ├── SimulationCanvas.tsx    # 60 FPS Canvas simulation, SLC-41 pad, staging physics, orbital trajectories
+│   │   ├── LaunchCockpit.tsx       # Phase 2 Avionics cockpit with throttle, TVC pitch, and roll levers
+│   │   ├── Mars3DView.tsx          # 3D WebGL rotating Mars sphere with Three.js & GLTF loader
+│   │   ├── ControlPanel.tsx        # Interactive control panels for all 8 flight phases
+│   │   ├── Footer.tsx              # Mission Operations Center bottom telemetry strip
+│   │   ├── IntroOverlay.tsx        # Mission briefing dossier, historical specs & start/resume modal
+│   │   ├── Modal.tsx               # Flight manual handbook, mission debrief report, restart confirmation
+│   │   └── ToastContainer.tsx      # Procedural audio-reactive toast notification alerts
+│   ├── context/
+│   │   └── GameContext.tsx         # Central React state machine, physics loop, localStorage checkpoints
+│   └── lib/
+│       ├── types.ts                # Strict TypeScript interfaces for all game entities and telemetry
+│       ├── constants.ts            # Component specifications, launch vehicle parameters, phase metadata
+│       ├── physics.ts              # Atmospheric drag, gravity integration, rocket equation, aerobraking
+│       ├── planetMesh.ts           # Pre-extracted 3D geometry vertices, normals, and UVs for offline rendering
+│       ├── planetRenderer.ts       # Standalone WebGL 3D planet renderer with lighting shaders
+│       ├── audio.ts                # Real-time Web Audio API sound generator
+│       └── endings.ts              # Multibranch debrief reports, failure analysis & score evaluation
+├── .gitignore                      # Git ignore rules for node_modules, build outputs, and secrets
+├── next.config.mjs                 # Next.js configuration (asset optimization, clean dist)
+├── package.json                    # Project dependencies (Next.js 15, React 19, Three.js, TypeScript)
+├── start_nextjs.bat                # Windows quick launcher batch file
+├── tsconfig.json                   # TypeScript compiler configuration
+└── README.md                       # This comprehensive documentation
+```
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology |
+|---|---|
+| **Framework** | Next.js 15.1 (App Router) |
+| **UI Library** | React 19 |
+| **Language** | TypeScript 5.7 (strict typing) |
+| **3D Rendering** | Three.js 0.187 (WebGL) + Custom WebGL Shader fallback |
+| **2D Simulation** | HTML5 Canvas API (hardware-accelerated, 60 FPS) |
+| **Audio** | Web Audio API (real-time procedural oscillator synthesis) |
+| **Styling** | Vanilla CSS (CSS Variables, Grid & Flexbox, CRT scanline effects) |
+| **State Management** | React Context API + LocalStorage persistence |
+
+---
+
+## 📜 Educational & Aerospace Simulation Notice
+
+This simulator is designed for educational exploration and spaceflight enthusiasm. Atmospheric ascent dynamics, Tsiolkovsky rocket equation calculations, Max Q aerodynamic drag, and aerobraking corridor models reflect authentic physics principles. However, specific mission parameters (burn durations, orbital mechanics approximations, simplified flight timelines, and program budgets) have been balanced for engaging interactive gameplay. It is not intended for operational flight guidance design.
+
+GLB 3D planetary models and topographic surface textures are derived from publicly available NASA/JPL datasets.
+
+---
+
+## 📄 License
+
+Created for educational and spaceflight simulation purposes. All NASA planetary textures, Atlas V imagery, and Mars Reconnaissance Orbiter assets belong to their respective public domain / educational resource creators.

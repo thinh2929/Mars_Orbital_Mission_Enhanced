@@ -22,7 +22,7 @@ next-env.d.ts
 .eslintcache
 
 # ==========================================
-# Environment Variables & Secrets (Bảo mật)
+# Environment Variables & Secrets (Security)
 # ==========================================
 .env
 .env*.local

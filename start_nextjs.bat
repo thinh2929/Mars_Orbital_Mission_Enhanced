@@ -1,8 +1,8 @@
 @echo off
 cd /d "%~dp0"
 echo ===================================================
-echo   MARS ORBITAL MISSION - NEXT.JS EDITION
+echo   MARS ORBITAL MISSION - NEXT.JS SIMULATOR
 echo ===================================================
-echo Dang khoi chay may chu Next.js dev server...
+echo Starting Next.js development server...
 start http://localhost:3000
 npm run dev
